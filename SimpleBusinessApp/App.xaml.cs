@@ -22,7 +22,6 @@ namespace SimpleBusinessApp
             var containter = bootstrapper.Bootstrap();
             var mainWindow = containter.Resolve<MainWindow>();
             mainWindow.Show();
-
         }
 
         private void Application_DispatcherUnhandledException(object sender, 
