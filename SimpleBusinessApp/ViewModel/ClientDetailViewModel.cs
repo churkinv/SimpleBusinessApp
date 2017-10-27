@@ -46,6 +46,15 @@ namespace SimpleBusinessApp.ViewModel
         {
             var client = await _clientDataService.GetByIdAsync(clientId);
             Client = new ClientWrapper(client);
+
+            Client.PropertyChanged += (s, e) =>
+              {
+                  if (e.PropertyName == nameof(Client.HasErrors))
+                  {
+                      ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+                  }  
+              };
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
         }
 
         private async void OnSaveExecute()
@@ -61,8 +70,8 @@ namespace SimpleBusinessApp.ViewModel
 
         private bool OnSaveCanExecute()
         {
-            //TODO check if Client is Valid
-            return true;
+            //TODO check in additions if Client has changes
+            return Client != null && !Client.HasErrors;
         }
 
         private async void OnOpenClientDetailView(int clientId)

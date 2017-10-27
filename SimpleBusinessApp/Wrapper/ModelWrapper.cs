@@ -17,7 +17,6 @@ namespace SimpleBusinessApp.Wrapper
 
         public T Model { get; }
 
-
         /// <summary>
         /// This method gives us possibility to load property
         /// by calling single method (using reflection), instead of calling it directly like: 
