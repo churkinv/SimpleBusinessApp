@@ -2,6 +2,10 @@
 
 namespace SimpleBusinessApp.Model
 {
+    /// <summary>
+    /// We use DataAnnotations which is used by 
+    /// Code First EF migrations to create DB
+    /// </summary>
     public class Client
     {
         //[Key] EF has a convention for Id property it will set is as Key automatically so no need attribute
@@ -15,6 +19,7 @@ namespace SimpleBusinessApp.Model
         public string LastName { get; set; }
 
         [StringLength (50)]
+        [EmailAddress] // this annotations allow us to check if the property contains a valid email address
         public string Email { get; set; }
     }
 }

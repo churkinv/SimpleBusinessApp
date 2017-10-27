@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 
 namespace SimpleBusinessApp.Wrapper
@@ -25,12 +26,11 @@ namespace SimpleBusinessApp.Wrapper
         /// <typeparam name="TValue"></typeparam>
         /// <param name="propertyName"></param>
         /// <returns></returns>
-        protected virtual TValue GetValue<TValue>([CallerMemberName]string propertyName = null) // = null means this parametr is optional, also we changed T->TValue otherwise it would collide with T parametr of class
+        protected virtual TValue GetValue<TValue>([CallerMemberName]string propertyName = null) // = null means this parametr is optional, also we changed T->TValue otherwise it would collide with T parametr of the class
         {
             return (TValue)typeof(T).GetProperty(propertyName).GetValue(Model);
         }
-
-
+        
         /// <summary>
         /// This method gives us possibility to set property by calling single method (using reflection)
         /// instead of calling it like: 
@@ -45,18 +45,39 @@ namespace SimpleBusinessApp.Wrapper
         {
             typeof(T).GetProperty(propertyName).SetValue(Model, value);
             OnPropertyChanged(propertyName);
-            ValidatePropertyInternal(propertyName);
+            ValidatePropertyInternal(propertyName, value);
         }
 
 
         /// <summary>
-        /// This method is called every time when set method is called
+        /// This method is called every time when set method is called.
         /// </summary>
         /// <param name="propertyName"></param>
-        private void ValidatePropertyInternal(string propertyName)
+        private void ValidatePropertyInternal(string propertyName, object currentValue)
         {
             ClearErrors(propertyName);
 
+            // 1. Validate Data Annotations
+            ValidateDataAnnotations(propertyName, currentValue);
+
+            // 2. Validate Cusotm Errors
+            ValidateCustomErrors(propertyName);
+        }
+
+        private void ValidateDataAnnotations(string propertyName, object currentValue)
+        {
+            var results = new List<ValidationResult>();
+            var context = new ValidationContext(Model) { MemberName = propertyName };
+            Validator.TryValidateProperty(currentValue, context, results);
+
+            foreach (var result in results)
+            {
+                AddError(propertyName, result.ErrorMessage);
+            }
+        }
+
+        private void ValidateCustomErrors(string propertyName)
+        {
             var errors = ValidateProperty(propertyName);
             if (errors != null)
             {
