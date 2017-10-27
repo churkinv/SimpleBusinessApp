@@ -1,5 +1,6 @@
 ﻿using SimpleBusinessApp.Model;
 using System;
+using System.Collections.Generic;
 
 namespace SimpleBusinessApp.Wrapper
 {
@@ -14,35 +15,17 @@ namespace SimpleBusinessApp.Wrapper
         {
         }
 
-        public int Id { get { return Model.Id; } } 
+        public int Id { get { return Model.Id; } }
 
         public string FirstName
         {
-            get { return GetValue<string>(); } 
-            set
-            {
-                SetValue(value);
-                ValidateProperty(nameof(FirstName));
-            }
-        }        
-
-        private void ValidateProperty(string propertyName)
-        {
-            ClearErrors(propertyName);
-            switch (propertyName)
-            {
-                case nameof(FirstName):
-                    if (string.Equals(FirstName, "Batman", StringComparison.OrdinalIgnoreCase)) // just example, enter Batman as FirstName to txtbox, and now when we change the name to Batamn, out txtbox will have red frame
-                    {
-                        AddError(propertyName, "Batman is not valid"); // 
-                    }
-                    break;
-            }
+            get { return GetValue<string>(); }
+            set { SetValue(value); }
         }
 
         public string LastName
         {
-            get { return  GetValue<string>(); }
+            get { return GetValue<string>(); }
             set { SetValue(value); }
         }
 
@@ -50,6 +33,19 @@ namespace SimpleBusinessApp.Wrapper
         {
             get { return GetValue<string>(); }
             set { SetValue(value); }
-        }        
+        }
+
+        protected override IEnumerable<string> ValidateProperty(string propertyName)
+        {
+            switch (propertyName)
+            {
+                case nameof(FirstName):
+                    if (string.Equals(FirstName, "Batman", StringComparison.OrdinalIgnoreCase)) // just example, enter Batman as FirstName to txtbox, and now when we change the name to Batamn, out txtbox will have red frame
+                    {
+                        yield return "Batman is not valid";
+                    }
+                    break;
+            }
+        }
     }
 }

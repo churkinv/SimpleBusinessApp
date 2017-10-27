@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace SimpleBusinessApp.Wrapper
 {
@@ -16,8 +18,9 @@ namespace SimpleBusinessApp.Wrapper
 
 
         /// <summary>
-        /// This method gives us possibility to load property by calling single method (using reflection)
-        /// instead of calling it directly like:  get { return Model.FirstName; } -->  get { return  GetValue<string>(); }
+        /// This method gives us possibility to load property
+        /// by calling single method (using reflection), instead of calling it directly like: 
+        /// get {return Model.FirstName;} we call it get {GetValue &lt;string&gt;()}
         /// </summary>
         /// <typeparam name="TValue"></typeparam>
         /// <param name="propertyName"></param>
@@ -26,6 +29,7 @@ namespace SimpleBusinessApp.Wrapper
         {
             return (TValue)typeof(T).GetProperty(propertyName).GetValue(Model);
         }
+
 
         /// <summary>
         /// This method gives us possibility to set property by calling single method (using reflection)
@@ -41,6 +45,37 @@ namespace SimpleBusinessApp.Wrapper
         {
             typeof(T).GetProperty(propertyName).SetValue(Model, value);
             OnPropertyChanged(propertyName);
+            ValidatePropertyInternal(propertyName);
+        }
+
+
+        /// <summary>
+        /// This method is called every time when set method is called
+        /// </summary>
+        /// <param name="propertyName"></param>
+        private void ValidatePropertyInternal(string propertyName)
+        {
+            ClearErrors(propertyName);
+
+            var errors = ValidateProperty(propertyName);
+            if (errors != null)
+            {
+                foreach (var error in errors)
+                {
+                    AddError(propertyName, error);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Client wrapper could ovveride this method
+        /// to return errors for specific properties
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        protected virtual IEnumerable<string> ValidateProperty(string propertyName)
+        {
+            return null;
         }
     }
 }
