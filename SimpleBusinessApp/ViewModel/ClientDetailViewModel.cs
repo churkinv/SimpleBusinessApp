@@ -32,8 +32,7 @@ namespace SimpleBusinessApp.ViewModel
         {
             _clientRepository = clientRepository;
             _eventAggregator = eventAggregator;
-            _eventAggregator.GetEvent<OpenClientDetailViewEvent>()
-                .Subscribe(OnOpenClientDetailView);
+          
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
         }
 
@@ -67,12 +66,7 @@ namespace SimpleBusinessApp.ViewModel
         {
             //TODO check in additions if Client has changes
             return Client != null && !Client.HasErrors;
-        }
-
-        private async void OnOpenClientDetailView(int clientId)
-        {
-            await LoadAsync(clientId);
-        }
+        }  
 
        
     }

@@ -1,5 +1,8 @@
-﻿using SimpleBusinessApp.Data;
+﻿using Prism.Events;
+using SimpleBusinessApp.Data;
+using SimpleBusinessApp.Event;
 using SimpleBusinessApp.Model;
+using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
@@ -7,52 +10,48 @@ namespace SimpleBusinessApp.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
+        private IEventAggregator _eventAggregator;
+        private Func<IClientDetailViewModel> _clientDetailViewModelCreator;
+
         public INavigationViewModel NavigationViewModel { get; }
-        public IClientDetailViewModel ClientDetailViewModel { get; }
+        private IClientDetailViewModel _clientDetailViewModel;
 
-        #region before restructuring
-        //private Client _selectedClient;
-        //private IClientDataService _clientDataService;
-        //public ObservableCollection<Client> Clients { get; set; } // then bind it to listView
-        #endregion
-
-        public MainViewModel(/*IClientDataService clientDataService*/ INavigationViewModel navigationViewModel, IClientDetailViewModel clientDetailViewModel) //replaced
+        public IClientDetailViewModel ClientDetailViewModel
         {
-            NavigationViewModel = navigationViewModel;
-            ClientDetailViewModel = clientDetailViewModel;
-            #region before restructuring
-            //Clients = new ObservableCollection<Client> (); commented after refactoring
-            //_clientDataService = clientDataService;
-            #endregion
+            get { return _clientDetailViewModel; }
+            set
+            {
+                _clientDetailViewModel = value;
+                OnPropertyChanged();
+            }
+            
+        }
 
+        public MainViewModel(INavigationViewModel navigationViewModel, 
+            Func<IClientDetailViewModel> clientDetailViewModelCreator, 
+            IEventAggregator eventAggregator ) 
+        {
+            _eventAggregator = eventAggregator;
+           
+            _clientDetailViewModelCreator = clientDetailViewModelCreator;
+
+            _eventAggregator.GetEvent<OpenClientDetailViewEvent>()
+              .Subscribe(OnOpenClientDetailView);
+
+            NavigationViewModel = navigationViewModel;
+        
         }
 
         public async Task LoadAsync()
         {
-            await NavigationViewModel.LoadAsync();
-
-            #region before restructuring
-            //var clients = await _clientDataService.GetAllAsync();
-            //Clients.Clear(); // to be sure that load method can be called many times
-            //foreach (var client in clients)
-            //{
-            //    Clients.Add(client);
-            //}
-            #endregion
+            await NavigationViewModel.LoadAsync();           
         }
 
-        #region before restructuring
-        //public Client SelectedClient
-        //{
-        //    get { return _selectedClient ; }
-        //    set
-        //    {
-        //        _selectedClient = value;
-        //        OnPropertyChanged(/*nameof(SelectedClient)*/); // property will be passed automatically by the compiler
-        //    }
-        //}
-        #endregion
-
+        private async void OnOpenClientDetailView(int clientId)
+        {
+            ClientDetailViewModel = _clientDetailViewModelCreator();
+            await ClientDetailViewModel.LoadAsync(clientId);
+        }       
     }
 
 }
