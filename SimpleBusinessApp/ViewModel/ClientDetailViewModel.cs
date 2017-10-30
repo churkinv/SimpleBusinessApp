@@ -54,7 +54,7 @@ namespace SimpleBusinessApp.ViewModel
 
         private async void OnSaveExecute()
         {
-            await _clientRepository.SaveAsync(Client.Model);
+            await _clientRepository.SaveAsync();
             _eventAggregator.GetEvent<AfterClientSaveEvent>().Publish(
                 new AfterClientSaveEventArgs
                 {

@@ -11,6 +11,6 @@ namespace SimpleBusinessApp.Data.Repositories
     public interface IClientRepository
     {
         Task<Client> GetByIdAsync(int clientId);
-        Task SaveAsync(Client client);
+        Task SaveAsync();
     }
 }
