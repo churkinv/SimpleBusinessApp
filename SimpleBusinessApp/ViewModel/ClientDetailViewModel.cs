@@ -16,6 +16,8 @@ namespace SimpleBusinessApp.ViewModel
         private IClientRepository _clientRepository;
         private IEventAggregator _eventAggregator;
         private ClientWrapper _client;
+        private bool _hasChanges;
+
         public ClientWrapper Client
         {
             get { return _client; }
@@ -25,14 +27,27 @@ namespace SimpleBusinessApp.ViewModel
                 OnPropertyChanged();
             }
         }
+        public bool HasChanges
+        {
+            get { return _hasChanges; }
+            set
+            {
+                if (_hasChanges != value) // to check if changes really took place
+                {
+                    _hasChanges = value;
+                    OnPropertyChanged();
+                    ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+                }
+            }
+        }
 
         public ICommand SaveCommand { get; }
-        
+
         public ClientDetailViewModel(IClientRepository clientRepository, IEventAggregator eventAggregator)
         {
             _clientRepository = clientRepository;
             _eventAggregator = eventAggregator;
-          
+
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
         }
 
@@ -43,10 +58,14 @@ namespace SimpleBusinessApp.ViewModel
 
             Client.PropertyChanged += (s, e) =>
               {
+                  if (!HasChanges)
+                  {
+                      HasChanges = _clientRepository.HasChanges(); // to be sure that we don`t call has changes method everytime, we only want to call if HasChanges is not true yet
+                  }
                   if (e.PropertyName == nameof(Client.HasErrors))
                   {
                       ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
-                  }  
+                  }
               };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
         }
@@ -54,20 +73,20 @@ namespace SimpleBusinessApp.ViewModel
         private async void OnSaveExecute()
         {
             await _clientRepository.SaveAsync();
+            HasChanges = _clientRepository.HasChanges();
             _eventAggregator.GetEvent<AfterClientSaveEvent>().Publish(
                 new AfterClientSaveEventArgs
                 {
                     Id = Client.Id,
-                    DisplayMember=$"{Client.FirstName} {Client.LastName}"            
+                    DisplayMember = $"{Client.FirstName} {Client.LastName}"
                 });
         }
 
         private bool OnSaveCanExecute()
         {
-            //TODO check in additions if Client has changes
-            return Client != null && !Client.HasErrors;
-        }  
+            return Client != null && !Client.HasErrors && HasChanges;
+        }
 
-       
+
     }
 }
