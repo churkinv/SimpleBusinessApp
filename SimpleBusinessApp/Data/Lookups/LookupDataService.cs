@@ -6,7 +6,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleBusinessApp.Data
+namespace SimpleBusinessApp.Data.Lookups
 {
     /// <summary>
     /// This class is used in NavigationViewModel to load clients by Id

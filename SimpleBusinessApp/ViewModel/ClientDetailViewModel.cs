@@ -1,13 +1,8 @@
 ﻿using Prism.Commands;
 using Prism.Events;
-using SimpleBusinessApp.Data;
+using SimpleBusinessApp.Data.Repositories;
 using SimpleBusinessApp.Event;
-using SimpleBusinessApp.Model;
 using SimpleBusinessApp.Wrapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -18,7 +13,7 @@ namespace SimpleBusinessApp.ViewModel
     /// </summary>
     public class ClientDetailViewModel : ViewModelBase, IClientDetailViewModel
     {
-        private IClientDataService _clientDataService;
+        private IClientRepository _clientRepository;
         private IEventAggregator _eventAggregator;
         private ClientWrapper _client;
         public ClientWrapper Client
@@ -33,9 +28,9 @@ namespace SimpleBusinessApp.ViewModel
 
         public ICommand SaveCommand { get; }
         
-        public ClientDetailViewModel(IClientDataService dataService, IEventAggregator eventAggregator)
+        public ClientDetailViewModel(IClientRepository clientRepository, IEventAggregator eventAggregator)
         {
-            _clientDataService = dataService;
+            _clientRepository = clientRepository;
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<OpenClientDetailViewEvent>()
                 .Subscribe(OnOpenClientDetailView);
@@ -44,7 +39,7 @@ namespace SimpleBusinessApp.ViewModel
 
         public async Task LoadAsync(int clientId)
         {
-            var client = await _clientDataService.GetByIdAsync(clientId);
+            var client = await _clientRepository.GetByIdAsync(clientId);
             Client = new ClientWrapper(client);
 
             Client.PropertyChanged += (s, e) =>
@@ -59,7 +54,7 @@ namespace SimpleBusinessApp.ViewModel
 
         private async void OnSaveExecute()
         {
-            await _clientDataService.SaveAsync(Client.Model);
+            await _clientRepository.SaveAsync(Client.Model);
             _eventAggregator.GetEvent<AfterClientSaveEvent>().Publish(
                 new AfterClientSaveEventArgs
                 {

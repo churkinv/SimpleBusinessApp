@@ -1,11 +1,9 @@
 ﻿using Prism.Events;
-using SimpleBusinessApp.Data;
 using SimpleBusinessApp.Event;
-using SimpleBusinessApp.Model;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System;
 using System.Linq;
+using SimpleBusinessApp.Data.Lookups;
 
 namespace SimpleBusinessApp.ViewModel
 {

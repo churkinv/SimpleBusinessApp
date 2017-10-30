@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using SimpleBusinessApp.Model;
 
-namespace SimpleBusinessApp.Data
+namespace SimpleBusinessApp.Data.Lookups
 {
     public interface IClientLookupDataService
     {
