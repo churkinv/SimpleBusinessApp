@@ -28,6 +28,11 @@ namespace SimpleBusinessApp.Data.Repositories
             //yield return new Client { FirstName = "Chrissi", LastName = "Egin" };
         }
 
+        public bool HasChanges()
+        {
+            return _context.ChangeTracker.HasChanges();
+        }
+
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
