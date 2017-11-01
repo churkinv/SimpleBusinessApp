@@ -5,6 +5,7 @@ using SimpleBusinessApp.Model;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace SimpleBusinessApp.ViewModel
 {
@@ -49,6 +50,15 @@ namespace SimpleBusinessApp.ViewModel
 
         private async void OnOpenClientDetailView(int clientId)
         {
+            if (ClientDetailViewModel != null && ClientDetailViewModel.HasChanges)
+            {
+                var result = MessageBox.Show("You`ve made changes. Do you wish to leave?", "Question",
+                    MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.Cancel)
+                {
+                    return;
+                }
+            }
             ClientDetailViewModel = _clientDetailViewModelCreator();
             await ClientDetailViewModel.LoadAsync(clientId);
         }       

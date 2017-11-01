@@ -35,8 +35,5 @@ namespace SimpleBusinessApp.Data.Lookups
             }
 
         }
-
-
-
     }
 }
