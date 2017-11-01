@@ -7,9 +7,20 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <ListView ItemsSource="{Binding Clients}" 
-                  SelectedItem="{Binding SelectedClient, Mode=TwoWay}"
-                  DisplayMemberPath="DisplayMember"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Clients}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding DisplayMember}"
+                                Command="{Binding OpenClientDetailViewCommand}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </ScrollViewer>
+  
+                     
         <!--display memebr is a property of our lookup class-->
     </Grid>
 </UserControl>

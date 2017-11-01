@@ -13,24 +13,7 @@ namespace SimpleBusinessApp.ViewModel
         private IEventAggregator _eventAggregator;
 
         public ObservableCollection<NavigationItemViewModel> Clients { get; }
-        private NavigationItemViewModel _selectedClient;
-
-        public NavigationItemViewModel SelectedClient
-        {
-            get { return _selectedClient; }
-            set
-            {
-                _selectedClient = value;
-                OnPropertyChanged();
-                if (_selectedClient != null)
-                {
-                    _eventAggregator.GetEvent<OpenClientDetailViewEvent>()
-                        .Publish(_selectedClient.Id);
-                }
-            }
-        }
-
-
+      
         public NavigationViewModel(IClientLookupDataService clientLookupDataService, IEventAggregator eventAggregator)
         {
             _clientLookupDataService = clientLookupDataService;
@@ -51,7 +34,7 @@ namespace SimpleBusinessApp.ViewModel
             Clients.Clear();
             foreach (var item in lookup)
             {
-                Clients.Add(new NavigationItemViewModel(item.Id, item.DisplayMember));
+                Clients.Add(new NavigationItemViewModel(item.Id, item.DisplayMember, _eventAggregator));
             }
         }
     }
