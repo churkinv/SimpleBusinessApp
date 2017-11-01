@@ -8,12 +8,25 @@
         mc:Ignorable="d"
         Title="Business Orginizer" Height="350" Width="525" FontSize="20">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <view:NavigationView DataContext="{Binding NavigationViewModel}"/>
-        <view:ClientDetailView Grid.Column="1" DataContext="{Binding ClientDetailViewModel}"/>
+        <Menu Grid.ColumnSpan="2" FontSize="20">
+            <MenuItem Header="Create">
+                <MenuItem Header="New Client" Command="{Binding CreateNewClientCommand}"/>
+            </MenuItem>
+        </Menu>
+        <view:NavigationView Grid.Row="1" 
+                             DataContext="{Binding NavigationViewModel}"/>
+        
+        <view:ClientDetailView Grid.Row="1"
+                               Grid.Column="1"
+                               DataContext="{Binding ClientDetailViewModel}"/>
         <!--<ListView ItemsSource="{Binding Clients}"  
                   SelectedItem="{Binding SelectedClient, Mode=TwoWay}"
                   DisplayMemberPath="FirstName"/> we commented it after creating NavigationView and we moved it ther NavigationView.xaml-->

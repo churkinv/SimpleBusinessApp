@@ -36,8 +36,7 @@ namespace SimpleBusinessApp.ViewModel
             _eventAggregator.GetEvent<OpenClientDetailViewEvent>()
               .Subscribe(OnOpenClientDetailView);
 
-            NavigationViewModel = navigationViewModel;
-        
+            NavigationViewModel = navigationViewModel;        
         }
 
         public async Task LoadAsync()
