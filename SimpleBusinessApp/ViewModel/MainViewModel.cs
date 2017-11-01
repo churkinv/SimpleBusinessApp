@@ -1,11 +1,8 @@
 ﻿using Prism.Events;
-using SimpleBusinessApp.Data;
 using SimpleBusinessApp.Event;
-using SimpleBusinessApp.Model;
+using SimpleBusinessApp.View.Services;
 using System;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace SimpleBusinessApp.ViewModel
 {
@@ -13,6 +10,7 @@ namespace SimpleBusinessApp.ViewModel
     {
         private IEventAggregator _eventAggregator;
         private Func<IClientDetailViewModel> _clientDetailViewModelCreator;
+        private IMessageDialogService _messageDialogService;
 
         public INavigationViewModel NavigationViewModel { get; }
         private IClientDetailViewModel _clientDetailViewModel;
@@ -24,17 +22,16 @@ namespace SimpleBusinessApp.ViewModel
             {
                 _clientDetailViewModel = value;
                 OnPropertyChanged();
-            }
-            
+            }            
         }
 
         public MainViewModel(INavigationViewModel navigationViewModel, 
             Func<IClientDetailViewModel> clientDetailViewModelCreator, 
-            IEventAggregator eventAggregator ) 
+            IEventAggregator eventAggregator, IMessageDialogService messageDialogService) 
         {
             _eventAggregator = eventAggregator;
-           
             _clientDetailViewModelCreator = clientDetailViewModelCreator;
+            _messageDialogService = messageDialogService;
 
             _eventAggregator.GetEvent<OpenClientDetailViewEvent>()
               .Subscribe(OnOpenClientDetailView);
@@ -50,11 +47,11 @@ namespace SimpleBusinessApp.ViewModel
 
         private async void OnOpenClientDetailView(int clientId)
         {
+            //it is not a good idea to use MessageBox directly in our viewmodel as this would block unit test on this method
             if (ClientDetailViewModel != null && ClientDetailViewModel.HasChanges)
             {
-                var result = MessageBox.Show("You`ve made changes. Do you wish to leave?", "Question",
-                    MessageBoxButton.OKCancel);
-                if (result == MessageBoxResult.Cancel)
+                var result = _messageDialogService.ShowOkCancelDialog("You`ve made changes. Do you wish to leave?", "Question");
+                if (result == MessageDialogResult.Cancel)
                 {
                     return;
                 }

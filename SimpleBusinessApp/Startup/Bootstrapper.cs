@@ -4,6 +4,7 @@ using SimpleBusinessApp.Data;
 using SimpleBusinessApp.Data.Lookups;
 using SimpleBusinessApp.Data.Repositories;
 using SimpleBusinessApp.DataAccess;
+using SimpleBusinessApp.View.Services;
 using SimpleBusinessApp.ViewModel;
 
 namespace SimpleBusinessApp.Startup
@@ -23,6 +24,9 @@ namespace SimpleBusinessApp.Startup
             builder.RegisterType<ClientOrganizerDbContext>().AsSelf(); // in this case context will be created every time it is requested. Registration of ClientDataServiseDbContext from UI
 
             builder.RegisterType<MainWindow>().AsSelf();
+
+            builder.RegisterType<MessageDialogService>().As<IMessageDialogService>();
+
             builder.RegisterType<MainViewModel>().AsSelf();
             builder.RegisterType<NavigationViewModel>().As<INavigationViewModel>();
             builder.RegisterType<ClientDetailViewModel>().As<IClientDetailViewModel>();
