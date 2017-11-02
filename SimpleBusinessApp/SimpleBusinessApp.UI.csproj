@@ -71,6 +71,7 @@
     <Compile Include="Data\Lookups\LookupDataService.cs" />
     <Compile Include="Data\Repository\ClientRepository.cs" />
     <Compile Include="Data\Repository\IClientRepository.cs" />
+    <Compile Include="Event\AfterClientDeletedEvent.cs" />
     <Compile Include="Event\AfterClientSaveEvent.cs" />
     <Compile Include="Event\OpenClientDetailViewEvent.cs" />
     <Compile Include="Startup\Bootstrapper.cs" />

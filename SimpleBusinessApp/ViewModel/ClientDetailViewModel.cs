@@ -55,6 +55,7 @@ namespace SimpleBusinessApp.ViewModel
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
             DeleteCommand = new DelegateCommand(OnDeleteExecute);
+            _eventAggregator.GetEvent<AfterClientDeletedEvent>().Publish(Client.Id);
         }
 
         private async void OnDeleteExecute()
