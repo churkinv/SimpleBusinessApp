@@ -72,6 +72,12 @@ namespace SimpleBusinessApp.ViewModel
                   }
               };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+
+            if (Client.Id == 0)
+            {
+                // manipulation to trigger the validation
+                Client.FirstName = "";
+            }
         }
 
         private Client CreateNewClient()
