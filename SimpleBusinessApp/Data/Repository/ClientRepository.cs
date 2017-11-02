@@ -38,6 +38,11 @@ namespace SimpleBusinessApp.Data.Repositories
             return _context.ChangeTracker.HasChanges();
         }
 
+        public void Remove(Client model)
+        {
+            _context.Clients.Remove(model);
+        }
+
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();

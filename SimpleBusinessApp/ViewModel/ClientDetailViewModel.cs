@@ -29,6 +29,7 @@ namespace SimpleBusinessApp.ViewModel
                 OnPropertyChanged();
             }
         }
+
         public bool HasChanges
         {
             get { return _hasChanges; }
@@ -45,12 +46,21 @@ namespace SimpleBusinessApp.ViewModel
 
         public ICommand SaveCommand { get; }
 
+        public ICommand DeleteCommand { get; }
+
         public ClientDetailViewModel(IClientRepository clientRepository, IEventAggregator eventAggregator)
         {
             _clientRepository = clientRepository;
             _eventAggregator = eventAggregator;
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
+            DeleteCommand = new DelegateCommand(OnDeleteExecute);
+        }
+
+        private async void OnDeleteExecute()
+        {
+            _clientRepository.Remove(Client.Model);
+            await _clientRepository.SaveAsync();
         }
 
         public async Task LoadAsync(int? clientId)

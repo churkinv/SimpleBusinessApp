@@ -14,5 +14,6 @@ namespace SimpleBusinessApp.Data.Repositories
         Task SaveAsync();
         bool HasChanges();
         void Add(Client client);
+        void Remove(Client model);
     }
 }
