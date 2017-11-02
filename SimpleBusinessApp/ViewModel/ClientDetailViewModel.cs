@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System;
 using SimpleBusinessApp.Model;
+using SimpleBusinessApp.View.Services;
 
 namespace SimpleBusinessApp.ViewModel
 {
@@ -17,6 +18,7 @@ namespace SimpleBusinessApp.ViewModel
     {
         private IClientRepository _clientRepository;
         private IEventAggregator _eventAggregator;
+        private IMessageDialogService _messageDialogService;
         private ClientWrapper _client;
         private bool _hasChanges;
 
@@ -48,10 +50,12 @@ namespace SimpleBusinessApp.ViewModel
 
         public ICommand DeleteCommand { get; }
 
-        public ClientDetailViewModel(IClientRepository clientRepository, IEventAggregator eventAggregator)
+        public ClientDetailViewModel(IClientRepository clientRepository, 
+            IEventAggregator eventAggregator, IMessageDialogService messageDialogService)
         {
             _clientRepository = clientRepository;
             _eventAggregator = eventAggregator;
+            _messageDialogService = messageDialogService;
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
             DeleteCommand = new DelegateCommand(OnDeleteExecute);            
@@ -59,9 +63,14 @@ namespace SimpleBusinessApp.ViewModel
 
         private async void OnDeleteExecute()
         {
-            _clientRepository.Remove(Client.Model);
-            await _clientRepository.SaveAsync();
-            _eventAggregator.GetEvent<AfterClientDeletedEvent>().Publish(Client.Id);
+            var result = _messageDialogService.ShowOkCancelDialog("Do you really want to delete the Client?", 
+                "Question");
+            if (result == MessageDialogResult.Ok)
+            {
+                _clientRepository.Remove(Client.Model);
+                await _clientRepository.SaveAsync();
+                _eventAggregator.GetEvent<AfterClientDeletedEvent>().Publish(Client.Id);
+            }          
         }
 
         public async Task LoadAsync(int? clientId)
