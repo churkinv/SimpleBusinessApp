@@ -17,6 +17,11 @@ namespace SimpleBusinessApp.Data.Repositories
             _context = context;
         }
 
+        public void Add(Client client)
+        {
+            _context.Clients.Add(client);
+        }
+
         public async Task<Client> GetByIdAsync(int clientId)
         {
             return await _context.Clients.SingleAsync(f => f.Id == clientId); // to get data from DB

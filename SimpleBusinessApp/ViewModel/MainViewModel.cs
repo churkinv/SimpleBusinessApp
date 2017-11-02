@@ -1,8 +1,10 @@
-﻿using Prism.Events;
+﻿using Prism.Commands;
+using Prism.Events;
 using SimpleBusinessApp.Event;
 using SimpleBusinessApp.View.Services;
 using System;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace SimpleBusinessApp.ViewModel
 {
@@ -11,10 +13,10 @@ namespace SimpleBusinessApp.ViewModel
         private IEventAggregator _eventAggregator;
         private Func<IClientDetailViewModel> _clientDetailViewModelCreator;
         private IMessageDialogService _messageDialogService;
-
-        public INavigationViewModel NavigationViewModel { get; }
         private IClientDetailViewModel _clientDetailViewModel;
 
+        public ICommand CreateNewClientCommand { get; }
+        public INavigationViewModel NavigationViewModel { get; }
         public IClientDetailViewModel ClientDetailViewModel
         {
             get { return _clientDetailViewModel; }
@@ -36,15 +38,17 @@ namespace SimpleBusinessApp.ViewModel
             _eventAggregator.GetEvent<OpenClientDetailViewEvent>()
               .Subscribe(OnOpenClientDetailView);
 
+            CreateNewClientCommand = new DelegateCommand(OnCreateNewClientExecute);
+
             NavigationViewModel = navigationViewModel;        
-        }
+        }      
 
         public async Task LoadAsync()
         {
             await NavigationViewModel.LoadAsync();           
         }
 
-        private async void OnOpenClientDetailView(int clientId)
+        private async void OnOpenClientDetailView(int? clientId)
         {
             //it is not a good idea to use MessageBox directly in our viewmodel as this would block unit test on this method
             if (ClientDetailViewModel != null && ClientDetailViewModel.HasChanges)
@@ -57,7 +61,12 @@ namespace SimpleBusinessApp.ViewModel
             }
             ClientDetailViewModel = _clientDetailViewModelCreator();
             await ClientDetailViewModel.LoadAsync(clientId);
-        }       
+        }
+
+        private void OnCreateNewClientExecute()
+        {
+            OnOpenClientDetailView(null);
+        }
     }
 
 }

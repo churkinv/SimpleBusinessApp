@@ -5,6 +5,8 @@ using SimpleBusinessApp.Event;
 using SimpleBusinessApp.Wrapper;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System;
+using SimpleBusinessApp.Model;
 
 namespace SimpleBusinessApp.ViewModel
 {
@@ -51,11 +53,13 @@ namespace SimpleBusinessApp.ViewModel
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
         }
 
-        public async Task LoadAsync(int clientId)
+        public async Task LoadAsync(int? clientId)
         {
-            var client = await _clientRepository.GetByIdAsync(clientId);
-            Client = new ClientWrapper(client);
+            var client = clientId.HasValue
+                ? await _clientRepository.GetByIdAsync(clientId.Value)
+                : CreateNewClient();
 
+            Client = new ClientWrapper(client);
             Client.PropertyChanged += (s, e) =>
               {
                   if (!HasChanges)
@@ -68,6 +72,14 @@ namespace SimpleBusinessApp.ViewModel
                   }
               };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+        }
+
+        private Client CreateNewClient()
+        {
+            var client = new Client();
+            _clientRepository.Add(client);
+
+            return client;
         }
 
         private async void OnSaveExecute()

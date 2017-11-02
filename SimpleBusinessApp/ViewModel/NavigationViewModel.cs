@@ -24,8 +24,15 @@ namespace SimpleBusinessApp.ViewModel
 
         private void AfterClientSaved(AfterClientSaveEventArgs obj)
         {
-            var lookupItem = Clients.Single(l=>l.Id==obj.Id);
-            lookupItem.DisplayMember = obj.DisplayMember;
+            var lookupItem = Clients.SingleOrDefault(l=>l.Id==obj.Id);
+            if (lookupItem == null)
+            {
+                Clients.Add(new NavigationItemViewModel(obj.Id, obj.DisplayMember, _eventAggregator));
+            }
+            else
+            {
+                lookupItem.DisplayMember = obj.DisplayMember;
+            }           
         }
 
         public async Task LoadAsync()

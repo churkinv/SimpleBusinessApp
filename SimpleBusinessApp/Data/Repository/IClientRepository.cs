@@ -13,5 +13,6 @@ namespace SimpleBusinessApp.Data.Repositories
         Task<Client> GetByIdAsync(int clientId);
         Task SaveAsync();
         bool HasChanges();
+        void Add(Client client);
     }
 }
