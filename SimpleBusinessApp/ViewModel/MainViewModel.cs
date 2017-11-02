@@ -37,11 +37,17 @@ namespace SimpleBusinessApp.ViewModel
 
             _eventAggregator.GetEvent<OpenClientDetailViewEvent>()
               .Subscribe(OnOpenClientDetailView);
+            _eventAggregator.GetEvent<AfterClientDeletedEvent>().Subscribe(AfterClientDeleted);
 
             CreateNewClientCommand = new DelegateCommand(OnCreateNewClientExecute);
 
             NavigationViewModel = navigationViewModel;        
-        }      
+        }
+
+        private void AfterClientDeleted(int clientId)
+        {
+            ClientDetailViewModel = null;
+        }
 
         public async Task LoadAsync()
         {

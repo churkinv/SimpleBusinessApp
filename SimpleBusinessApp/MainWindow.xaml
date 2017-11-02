@@ -5,8 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleBusinessApp"
         xmlns:view ="clr-namespace:SimpleBusinessApp.View" 
+        xmlns:viewModel ="clr-namespace:SimpleBusinessApp.ViewModel" 
         mc:Ignorable="d"
         Title="Business Orginizer" Height="350" Width="525" FontSize="20">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModel:ClientDetailViewModel}">
+            <view:ClientDetailView/>
+        </DataTemplate>        
+    </Window.Resources>          
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -24,15 +30,15 @@
         <view:NavigationView Grid.Row="1" 
                              DataContext="{Binding NavigationViewModel}"/>
         
-        <view:ClientDetailView Grid.Row="1"
+        <ContentControl Grid.Row="1"
                                Grid.Column="1"
-                               DataContext="{Binding ClientDetailViewModel}"/>
+                               Content="{Binding ClientDetailViewModel}"/>
+        
         <!--<ListView ItemsSource="{Binding Clients}"  
                   SelectedItem="{Binding SelectedClient, Mode=TwoWay}"
                   DisplayMemberPath="FirstName"/> we commented it after creating NavigationView and we moved it ther NavigationView.xaml-->
         <!--  SelectedClientit is MainViewModel method-->
         <!-- Clients it is MainViewModel property-->
-        <!-- what we want to display-->
-       
+        <!-- what we want to display-->       
         </Grid>
 </Window>
