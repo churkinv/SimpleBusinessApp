@@ -54,14 +54,14 @@ namespace SimpleBusinessApp.ViewModel
             _eventAggregator = eventAggregator;
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
-            DeleteCommand = new DelegateCommand(OnDeleteExecute);
-            _eventAggregator.GetEvent<AfterClientDeletedEvent>().Publish(Client.Id);
+            DeleteCommand = new DelegateCommand(OnDeleteExecute);            
         }
 
         private async void OnDeleteExecute()
         {
             _clientRepository.Remove(Client.Model);
             await _clientRepository.SaveAsync();
+            _eventAggregator.GetEvent<AfterClientDeletedEvent>().Publish(Client.Id);
         }
 
         public async Task LoadAsync(int? clientId)
