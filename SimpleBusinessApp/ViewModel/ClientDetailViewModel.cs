@@ -8,6 +8,8 @@ using System.Windows.Input;
 using System;
 using SimpleBusinessApp.Model;
 using SimpleBusinessApp.View.Services;
+using SimpleBusinessApp.Data.Lookups;
+using System.Collections.ObjectModel;
 
 namespace SimpleBusinessApp.ViewModel
 {
@@ -19,6 +21,7 @@ namespace SimpleBusinessApp.ViewModel
         private IClientRepository _clientRepository;
         private IEventAggregator _eventAggregator;
         private IMessageDialogService _messageDialogService;
+        private ICompanyLookupDataService _companyLookupDataService;
         private ClientWrapper _client;
         private bool _hasChanges;
 
@@ -49,16 +52,21 @@ namespace SimpleBusinessApp.ViewModel
         public ICommand SaveCommand { get; }
 
         public ICommand DeleteCommand { get; }
+        public ObservableCollection<LookupItem> Companies { get; }
 
         public ClientDetailViewModel(IClientRepository clientRepository, 
-            IEventAggregator eventAggregator, IMessageDialogService messageDialogService)
+            IEventAggregator eventAggregator, IMessageDialogService messageDialogService,
+            ICompanyLookupDataService companyLookupDataService)
         {
             _clientRepository = clientRepository;
             _eventAggregator = eventAggregator;
             _messageDialogService = messageDialogService;
+            _companyLookupDataService = companyLookupDataService;
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
-            DeleteCommand = new DelegateCommand(OnDeleteExecute);            
+            DeleteCommand = new DelegateCommand(OnDeleteExecute);
+
+            Companies = new ObservableCollection<LookupItem>();
         }
 
         private async void OnDeleteExecute()
@@ -79,24 +87,43 @@ namespace SimpleBusinessApp.ViewModel
                 ? await _clientRepository.GetByIdAsync(clientId.Value)
                 : CreateNewClient();
 
+            InitializeClient(client);
+
+            await LoadCompaniesAsync();
+
+        }
+
+        private void InitializeClient(Client client)
+        {
             Client = new ClientWrapper(client);
             Client.PropertyChanged += (s, e) =>
-              {
-                  if (!HasChanges)
-                  {
-                      HasChanges = _clientRepository.HasChanges(); // to be sure that we don`t call has changes method everytime, we only want to call if HasChanges is not true yet
-                  }
-                  if (e.PropertyName == nameof(Client.HasErrors))
-                  {
-                      ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
-                  }
-              };
+            {
+                if (!HasChanges)
+                {
+                    HasChanges = _clientRepository.HasChanges(); // to be sure that we don`t call has changes method everytime, we only want to call if HasChanges is not true yet
+                }
+                if (e.PropertyName == nameof(Client.HasErrors))
+                {
+                    ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+                }
+            };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
 
             if (Client.Id == 0)
             {
                 // manipulation to trigger the validation
                 Client.FirstName = "";
+            }
+        }
+
+        private async Task LoadCompaniesAsync()
+        {
+            Companies.Clear();
+            var lookup = await _companyLookupDataService.GetCompanyLookupAsync();
+
+            foreach (var lookupItem in lookup)
+            {
+                Companies.Add(lookupItem);
             }
         }
 
