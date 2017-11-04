@@ -119,6 +119,7 @@ namespace SimpleBusinessApp.ViewModel
         private async Task LoadCompaniesAsync()
         {
             Companies.Clear();
+            Companies.Add(new NullLookupItem{DisplayMember = " - " }); // to have possibility to display Null (or specific sign) in our combobox
             var lookup = await _companyLookupDataService.GetCompanyLookupAsync();
 
             foreach (var lookupItem in lookup)

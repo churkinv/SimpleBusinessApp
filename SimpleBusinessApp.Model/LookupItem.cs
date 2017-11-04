@@ -10,4 +10,9 @@
         public string DisplayMember { get; set; }
 
     }
+
+    public class NullLookupItem : LookupItem
+    {
+        public int? Id { get { return null; } }
+    }
 }
