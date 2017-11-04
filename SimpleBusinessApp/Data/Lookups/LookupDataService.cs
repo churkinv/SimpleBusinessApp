@@ -11,7 +11,7 @@ namespace SimpleBusinessApp.Data.Lookups
     /// <summary>
     /// This class is used in NavigationViewModel to load clients by Id
     /// </summary>
-    public class LookupDataService : IClientLookupDataService
+    public class LookupDataService : IClientLookupDataService, ICompanyLookupDataService
     {
         private Func<ClientOrganizerDbContext> _contexCreator;
 
@@ -30,6 +30,22 @@ namespace SimpleBusinessApp.Data.Lookups
                 {
                     Id = f.Id,
                     DisplayMember = f.FirstName + " " + f.LastName
+                })
+                .ToListAsync();
+            }
+
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetCompanyLookupAsync()
+        {
+            using (var ctx = _contexCreator())
+            {
+                return await ctx.Company.AsNoTracking()
+                .Select(c =>
+                new LookupItem
+                {
+                    Id = c.Id,
+                    DisplayMember = c.Name + " " + c.OwnershipType
                 })
                 .ToListAsync();
             }

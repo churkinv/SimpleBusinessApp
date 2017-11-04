@@ -68,6 +68,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Data\Lookups\IClientLookupDataService.cs" />
+    <Compile Include="Data\Lookups\ICompanyLookupDataService.cs" />
     <Compile Include="Data\Lookups\LookupDataService.cs" />
     <Compile Include="Data\Repository\ClientRepository.cs" />
     <Compile Include="Data\Repository\IClientRepository.cs" />
