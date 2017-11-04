@@ -21,5 +21,10 @@ namespace SimpleBusinessApp.Model
         [StringLength (50)]
         [EmailAddress] // this annotations allow us to check if the property contains a valid email address
         public string Email { get; set; }
+
+        public int? CompanyId { get; set; }
+
+        public Company CompanyIsWorkingFor { get; set; }
+
     }
 }

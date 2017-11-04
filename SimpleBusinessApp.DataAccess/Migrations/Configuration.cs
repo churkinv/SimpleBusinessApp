@@ -23,6 +23,14 @@ namespace SimpleBusinessApp.DataAccess.Migrations
                 new Client { FirstName = "Chrissi", LastName = "Egin" }
             );
 
+            context.Company.AddOrUpdate(     
+              c => c.Name,           
+              new Company { Name = "Philips-Ukraine", OwnershipType = "TOV", CountryOfRegistration = "Ukraine" },
+              new Company { Name = "GroupeSeb Ukraine", OwnershipType = "TOV", CountryOfRegistration = "Ukraine" },
+              new Company { Name = "Samsung Electronics Co.", OwnershipType = "Ltd", CountryOfRegistration = "Republic of Korea" },
+              new Company { Name = "DE Longhi Industrial", OwnershipType = " S.A.", CountryOfRegistration = "Italy" }
+          );
+
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
