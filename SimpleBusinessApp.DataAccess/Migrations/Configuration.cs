@@ -31,6 +31,11 @@ namespace SimpleBusinessApp.DataAccess.Migrations
               new Company { Name = "DE Longhi Industrial", OwnershipType = " S.A.", CountryOfRegistration = "Italy" }
           );
 
+            context.SaveChanges();
+
+            context.ClientPhoneNumbers.AddOrUpdate(pn => pn.Number,
+                new ClientPhoneNumber { Number = "+38 0670000000", ClientId = context.Clients.First().Id });
+
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 

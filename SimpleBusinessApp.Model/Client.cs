@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace SimpleBusinessApp.Model
 {
@@ -8,6 +10,11 @@ namespace SimpleBusinessApp.Model
     /// </summary>
     public class Client
     {
+        public Client()
+        {
+            PhoneNumbers = new Collection<ClientPhoneNumber>();       
+        }
+
         //[Key] EF has a convention for Id property it will set is as Key automatically so no need attribute
         public int Id { get; set; }
 
@@ -25,6 +32,8 @@ namespace SimpleBusinessApp.Model
         public int? CompanyId { get; set; }
 
         public Company CompanyIsWorkingFor { get; set; }
+
+        public ICollection<ClientPhoneNumber> PhoneNumbers { get; set; }
 
     }
 }
