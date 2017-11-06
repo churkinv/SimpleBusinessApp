@@ -212,11 +212,6 @@ namespace SimpleBusinessApp.ViewModel
                 && HasChanges;
         }
 
-        private void OnRemoveNumberExecute()
-        {
-            //TODO: implement this
-        }
-
         private void OnAddPhoneNumberExecute()
         {
             var newNumber = new ClientPhoneNumberWrapper(new ClientPhoneNumber());
@@ -225,6 +220,16 @@ namespace SimpleBusinessApp.ViewModel
             Client.Model.PhoneNumbers.Add(newNumber.Model);
             newNumber.Number = ""; //Trigger validation;
         }
+
+        private void OnRemoveNumberExecute()
+        {
+            SelectedPhoneNumber.PropertyChanged -= ClientPhoneNumberWrapper_PropertyChanged;
+            Client.Model.PhoneNumbers.Remove(SelectedPhoneNumber.Model);
+            PhoneNumbers.Remove(SelectedPhoneNumber);
+            SelectedPhoneNumber = null;
+            HasChanges = _clientRepository.HasChanges();
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+        }      
 
         private bool OnRemovePhoneNumberCanExecute()
         {
