@@ -219,7 +219,11 @@ namespace SimpleBusinessApp.ViewModel
 
         private void OnAddPhoneNumberExecute()
         {
-            //TODO: implement this
+            var newNumber = new ClientPhoneNumberWrapper(new ClientPhoneNumber());
+            newNumber.PropertyChanged += ClientPhoneNumberWrapper_PropertyChanged;
+            PhoneNumbers.Add(newNumber);
+            Client.Model.PhoneNumbers.Add(newNumber.Model);
+            newNumber.Number = ""; //Trigger validation;
         }
 
         private bool OnRemovePhoneNumberCanExecute()
