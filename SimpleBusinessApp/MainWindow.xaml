@@ -7,7 +7,9 @@
         xmlns:view ="clr-namespace:SimpleBusinessApp.View" 
         xmlns:viewModel ="clr-namespace:SimpleBusinessApp.ViewModel" 
         mc:Ignorable="d"
-        Title="Business Orginizer" Height="350" Width="525" FontSize="20">
+        Title="Business Orginizer" Height="700" Width="1000" 
+        WindowStartupLocation="CenterScreen"
+        FontSize="20">
     <Window.Resources>
         <DataTemplate DataType="{x:Type viewModel:ClientDetailViewModel}">
             <view:ClientDetailView/>
