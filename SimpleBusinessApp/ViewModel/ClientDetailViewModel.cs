@@ -10,6 +10,9 @@ using SimpleBusinessApp.Model;
 using SimpleBusinessApp.View.Services;
 using SimpleBusinessApp.Data.Lookups;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace SimpleBusinessApp.ViewModel
 {
@@ -35,6 +38,19 @@ namespace SimpleBusinessApp.ViewModel
             }
         }
 
+        private ClientPhoneNumberWrapper _selectedPhoneNumber;
+
+        public ClientPhoneNumberWrapper SelectedPhoneNumber
+        {
+            get { return _selectedPhoneNumber; }
+            set
+            {
+                _selectedPhoneNumber = value;
+                OnPropertyChanged();
+                ((DelegateCommand)RemovePhoneNumberCommand).RaiseCanExecuteChanged();
+            }
+        }
+
         public bool HasChanges
         {
             get { return _hasChanges; }
@@ -52,7 +68,13 @@ namespace SimpleBusinessApp.ViewModel
         public ICommand SaveCommand { get; }
 
         public ICommand DeleteCommand { get; }
+
+        public ICommand AddPhoneNumberCommand { get; }
+
+        public ICommand RemovePhoneNumberCommand { get; }
+
         public ObservableCollection<LookupItem> Companies { get; }
+        public ObservableCollection<ClientPhoneNumberWrapper> PhoneNumbers { get; }
 
         public ClientDetailViewModel(IClientRepository clientRepository, 
             IEventAggregator eventAggregator, IMessageDialogService messageDialogService,
@@ -65,8 +87,11 @@ namespace SimpleBusinessApp.ViewModel
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
             DeleteCommand = new DelegateCommand(OnDeleteExecute);
+            AddPhoneNumberCommand = new DelegateCommand(OnAddPhoneNumberExecute);
+            RemovePhoneNumberCommand = new DelegateCommand(OnRemoveNumberExecute, OnRemovePhoneNumberCanExecute);
 
             Companies = new ObservableCollection<LookupItem>();
+            PhoneNumbers = new ObservableCollection<ClientPhoneNumberWrapper>();
         }
 
         private async void OnDeleteExecute()
@@ -89,8 +114,39 @@ namespace SimpleBusinessApp.ViewModel
 
             InitializeClient(client);
 
+            InitializeClientPhoneNumbers(client.PhoneNumbers);
+
             await LoadCompaniesAsync();
 
+        }
+
+        private void InitializeClientPhoneNumbers(ICollection<ClientPhoneNumber> phoneNumbers)
+        {
+            foreach (var wrapper in PhoneNumbers)
+            {
+                wrapper.PropertyChanged -= ClientPhoneNumberWrapper_PropertyChanged;
+            }
+            PhoneNumbers.Clear();
+
+            foreach (var clientPhoneNumber in phoneNumbers)
+            {
+                var wrapper = new ClientPhoneNumberWrapper(clientPhoneNumber);
+                PhoneNumbers.Add(wrapper);
+                wrapper.PropertyChanged += ClientPhoneNumberWrapper_PropertyChanged;
+            }
+
+        }
+
+        private void ClientPhoneNumberWrapper_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (!HasChanges)
+            {
+                HasChanges = _clientRepository.HasChanges();
+            }
+            if (e.PropertyName == nameof(ClientPhoneNumberWrapper.HasErrors))
+            {
+                ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+            }
         }
 
         private void InitializeClient(Client client)
@@ -150,9 +206,25 @@ namespace SimpleBusinessApp.ViewModel
 
         private bool OnSaveCanExecute()
         {
-            return Client != null && !Client.HasErrors && HasChanges;
+            return Client != null 
+                && !Client.HasErrors 
+                && PhoneNumbers.All(pn=>!pn.HasErrors)
+                && HasChanges;
         }
 
+        private void OnRemoveNumberExecute()
+        {
+            //TODO: implement this
+        }
 
+        private void OnAddPhoneNumberExecute()
+        {
+            //TODO: implement this
+        }
+
+        private bool OnRemovePhoneNumberCanExecute()
+        {
+            return SelectedPhoneNumber != null;
+        }
     }
 }

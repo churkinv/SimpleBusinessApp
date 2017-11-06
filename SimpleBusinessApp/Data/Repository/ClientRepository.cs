@@ -24,8 +24,10 @@ namespace SimpleBusinessApp.Data.Repositories
 
         public async Task<Client> GetByIdAsync(int clientId)
         {
-            return await _context.Clients.SingleAsync(f => f.Id == clientId); // to get data from DB
-            
+            return await _context.Clients
+                .Include(ph => ph.PhoneNumbers)
+                .SingleAsync(f => f.Id == clientId); // to get data from DB
+
             // below is hardcoded data creation, in case no DB
             //yield return new Client { FirstName = "Thomas", LastName = "Huber" };
             //yield return new Client { FirstName = "Andreas", LastName = "Boehler" };
