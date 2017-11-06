@@ -88,7 +88,7 @@ namespace SimpleBusinessApp.ViewModel
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
             DeleteCommand = new DelegateCommand(OnDeleteExecute);
             AddPhoneNumberCommand = new DelegateCommand(OnAddPhoneNumberExecute);
-            RemovePhoneNumberCommand = new DelegateCommand(OnRemoveNumberExecute, OnRemovePhoneNumberCanExecute);
+            RemovePhoneNumberCommand = new DelegateCommand(OnRemovePhoneNumberExecute, OnRemovePhoneNumberCanExecute);
 
             Companies = new ObservableCollection<LookupItem>();
             PhoneNumbers = new ObservableCollection<ClientPhoneNumberWrapper>();
@@ -221,9 +221,10 @@ namespace SimpleBusinessApp.ViewModel
             newNumber.Number = ""; //Trigger validation;
         }
 
-        private void OnRemoveNumberExecute()
+        private void OnRemovePhoneNumberExecute()
         {
             SelectedPhoneNumber.PropertyChanged -= ClientPhoneNumberWrapper_PropertyChanged;
+            _clientRepository.RemovePhoneNumber(SelectedPhoneNumber.Model);
             Client.Model.PhoneNumbers.Remove(SelectedPhoneNumber.Model);
             PhoneNumbers.Remove(SelectedPhoneNumber);
             SelectedPhoneNumber = null;

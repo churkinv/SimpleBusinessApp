@@ -45,6 +45,11 @@ namespace SimpleBusinessApp.Data.Repositories
             _context.Clients.Remove(model);
         }
 
+        public void RemovePhoneNumber(ClientPhoneNumber model)
+        {
+            _context.ClientPhoneNumbers.Remove(model);
+        }
+
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();

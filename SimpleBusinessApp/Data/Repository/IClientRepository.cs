@@ -15,5 +15,6 @@ namespace SimpleBusinessApp.Data.Repositories
         bool HasChanges();
         void Add(Client client);
         void Remove(Client model);
+        void RemovePhoneNumber(ClientPhoneNumber model);
     }
 }
