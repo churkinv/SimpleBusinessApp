@@ -19,10 +19,10 @@ namespace SimpleBusinessApp.ViewModel
     /// <summary>
     /// Loads a single Client
     /// </summary>
-    public class ClientDetailViewModel : ViewModelBase, IClientDetailViewModel
+    public class ClientDetailViewModel : DetailViewModelBase, IClientDetailViewModel
     {
         private IClientRepository _clientRepository;
-        private IEventAggregator _eventAggregator;
+
         private IMessageDialogService _messageDialogService;
         private ICompanyLookupDataService _companyLookupDataService;
         private ClientWrapper _client;
@@ -51,24 +51,6 @@ namespace SimpleBusinessApp.ViewModel
             }
         }
 
-        public bool HasChanges
-        {
-            get { return _hasChanges; }
-            set
-            {
-                if (_hasChanges != value) // to check if changes really took place
-                {
-                    _hasChanges = value;
-                    OnPropertyChanged();
-                    ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
-                }
-            }
-        }
-
-        public ICommand SaveCommand { get; }
-
-        public ICommand DeleteCommand { get; }
-
         public ICommand AddPhoneNumberCommand { get; }
 
         public ICommand RemovePhoneNumberCommand { get; }
@@ -78,15 +60,12 @@ namespace SimpleBusinessApp.ViewModel
 
         public ClientDetailViewModel(IClientRepository clientRepository,
             IEventAggregator eventAggregator, IMessageDialogService messageDialogService,
-            ICompanyLookupDataService companyLookupDataService)
+            ICompanyLookupDataService companyLookupDataService) : base(eventAggregator)
         {
             _clientRepository = clientRepository;
-            _eventAggregator = eventAggregator;
             _messageDialogService = messageDialogService;
             _companyLookupDataService = companyLookupDataService;
 
-            SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
-            DeleteCommand = new DelegateCommand(OnDeleteExecute);
             AddPhoneNumberCommand = new DelegateCommand(OnAddPhoneNumberExecute);
             RemovePhoneNumberCommand = new DelegateCommand(OnRemovePhoneNumberExecute, OnRemovePhoneNumberCanExecute);
 
@@ -94,24 +73,8 @@ namespace SimpleBusinessApp.ViewModel
             PhoneNumbers = new ObservableCollection<ClientPhoneNumberWrapper>();
         }
 
-        private async void OnDeleteExecute()
-        {
-            var result = _messageDialogService.ShowOkCancelDialog("Do you really want to delete the Client?",
-                "Question");
-            if (result == MessageDialogResult.Ok)
-            {
-                _clientRepository.Remove(Client.Model);
-                await _clientRepository.SaveAsync();
-                _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Publish(
-                    new AfterDetailDeletedEventArgs
-                    {
-                        Id = Client.Id,
-                        ViewModelName = nameof(ClientDetailViewModel)
-                    });
-            }
-        }
 
-        public async Task LoadAsync(int? clientId)
+        public override async Task LoadAsync(int? clientId)
         {
             var client = clientId.HasValue
                 ? await _clientRepository.GetByIdAsync(clientId.Value)
@@ -197,25 +160,31 @@ namespace SimpleBusinessApp.ViewModel
             return client;
         }
 
-        private async void OnSaveExecute()
+        protected override async void OnSaveExecute()
         {
             await _clientRepository.SaveAsync();
             HasChanges = _clientRepository.HasChanges();
-            _eventAggregator.GetEvent<AfterDetailSaveEvent>().Publish(
-                new AfterDetailSaveEventArgs
-                {
-                    Id = Client.Id,
-                    DisplayMember = $"{Client.FirstName} {Client.LastName}",
-                    ViewModelName = nameof(ClientDetailViewModel)
-                });
+            RaiseDetailSavedEvent(Client.Id, $"{Client.FirstName} {Client.LastName}");
         }
 
-        private bool OnSaveCanExecute()
+        protected override bool OnSaveCanExecute()
         {
             return Client != null
                 && !Client.HasErrors
                 && PhoneNumbers.All(pn => !pn.HasErrors)
                 && HasChanges;
+        }
+
+        protected override async void OnDeleteExecute()
+        {
+            var result = _messageDialogService.ShowOkCancelDialog("Do you really want to delete the Client?",
+                "Question");
+            if (result == MessageDialogResult.Ok)
+            {
+                _clientRepository.Remove(Client.Model);
+                await _clientRepository.SaveAsync();
+                RaiseDetailDeletedEvent(Client.Id);
+            }
         }
 
         private void OnAddPhoneNumberExecute()

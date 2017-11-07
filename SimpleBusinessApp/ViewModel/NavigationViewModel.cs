@@ -20,7 +20,7 @@ namespace SimpleBusinessApp.ViewModel
             _clientLookupDataService = clientLookupDataService;
             _eventAggregator = eventAggregator;
             Clients = new ObservableCollection<NavigationItemViewModel>();
-            _eventAggregator.GetEvent<AfterDetailSaveEvent>().Subscribe(AfterDetailSaved);
+            _eventAggregator.GetEvent<AfterDetailSavedEvent>().Subscribe(AfterDetailSaved);
             _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted);
         }
 
@@ -34,7 +34,7 @@ namespace SimpleBusinessApp.ViewModel
             }
         }
 
-        private void AfterDetailSaved(AfterDetailSaveEventArgs obj)
+        private void AfterDetailSaved(AfterDetailSavedEventArgs obj)
         {
             switch (obj.ViewModelName)
             {
