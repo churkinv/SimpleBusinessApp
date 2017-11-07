@@ -22,14 +22,15 @@ namespace SimpleBusinessApp.ViewModel
             Clients = new ObservableCollection<NavigationItemViewModel>();
             _eventAggregator.GetEvent<AfterClientSaveEvent>().Subscribe(AfterClientSaved);
             _eventAggregator.GetEvent<AfterClientDeletedEvent>().Subscribe(AfterClientDeleted);
-        }
+        }      
 
-        private void AfterClientDeleted(int clientId)
+        public async Task LoadAsync()
         {
-            var client = Clients.SingleOrDefault(c => c.Id == clientId);
-            if (client != null)
+            var lookup = await _clientLookupDataService.GetClientLookupAsync();
+            Clients.Clear();
+            foreach (var item in lookup)
             {
-                Clients.Remove(client);
+                Clients.Add(new NavigationItemViewModel(item.Id, item.DisplayMember, nameof(ClientDetailViewModel), _eventAggregator));
             }
         }
 
@@ -38,7 +39,7 @@ namespace SimpleBusinessApp.ViewModel
             var lookupItem = Clients.SingleOrDefault(l => l.Id == obj.Id);
             if (lookupItem == null)
             {
-                Clients.Add(new NavigationItemViewModel(obj.Id, obj.DisplayMember, _eventAggregator));
+                Clients.Add(new NavigationItemViewModel(obj.Id, obj.DisplayMember, nameof(ClientDetailViewModel), _eventAggregator));
             }
             else
             {
@@ -46,13 +47,12 @@ namespace SimpleBusinessApp.ViewModel
             }
         }
 
-        public async Task LoadAsync()
+        private void AfterClientDeleted(int clientId)
         {
-            var lookup = await _clientLookupDataService.GetClientLookupAsync();
-            Clients.Clear();
-            foreach (var item in lookup)
+            var client = Clients.SingleOrDefault(c => c.Id == clientId);
+            if (client != null)
             {
-                Clients.Add(new NavigationItemViewModel(item.Id, item.DisplayMember, _eventAggregator));
+                Clients.Remove(client);
             }
         }
     }

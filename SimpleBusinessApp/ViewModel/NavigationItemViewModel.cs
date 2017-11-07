@@ -10,9 +10,10 @@ namespace SimpleBusinessApp.ViewModel
     {
         private string _displayMember;
         private IEventAggregator _eventAggregator;
+        private string _detailViewModelName;
 
         public int Id { get; }
-        public ICommand OpenClientDetailViewCommand { get; }
+        public ICommand OpenDetailViewCommand { get; }
         public string DisplayMember
         {
             get { return _displayMember; }
@@ -21,21 +22,29 @@ namespace SimpleBusinessApp.ViewModel
                 _displayMember = value;
                 OnPropertyChanged();
             }
-        }
+        }       
 
-        public NavigationItemViewModel(int id, string displayMember,
+        public NavigationItemViewModel(int id, string displayMember, string detailViewModelName,
             IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
             Id = id;
             DisplayMember = displayMember;
-            OpenClientDetailViewCommand = new DelegateCommand(OnOpenClientView);
-            _eventAggregator = eventAggregator;
+            _detailViewModelName = detailViewModelName;
+            OpenDetailViewCommand = new DelegateCommand(OnOpenDetailViewExecute);
+           
         }
 
-        private void OnOpenClientView()
+        private void OnOpenDetailViewExecute()
         {
-            _eventAggregator.GetEvent<OpenClientDetailViewEvent>()
-                        .Publish(Id);
+            _eventAggregator.GetEvent<OpenDetailViewEvent>()
+                        .Publish(
+                
+                new OpenDetailViewEventArgs
+                {
+                    Id=Id,
+                    ViewModelName = _detailViewModelName
+                });
         }
 
     }

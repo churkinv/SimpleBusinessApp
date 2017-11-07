@@ -35,8 +35,8 @@ namespace SimpleBusinessApp.ViewModel
             _clientDetailViewModelCreator = clientDetailViewModelCreator;
             _messageDialogService = messageDialogService;
 
-            _eventAggregator.GetEvent<OpenClientDetailViewEvent>()
-              .Subscribe(OnOpenClientDetailView);
+            _eventAggregator.GetEvent<OpenDetailViewEvent>()
+              .Subscribe(OnOpenDetailView);
             _eventAggregator.GetEvent<AfterClientDeletedEvent>().Subscribe(AfterClientDeleted);
 
             CreateNewClientCommand = new DelegateCommand(OnCreateNewClientExecute);
@@ -54,7 +54,7 @@ namespace SimpleBusinessApp.ViewModel
             await NavigationViewModel.LoadAsync();           
         }
 
-        private async void OnOpenClientDetailView(int? clientId)
+        private async void OnOpenDetailView(OpenDetailViewEventArgs args)
         {
             //it is not a good idea to use MessageBox directly in our viewmodel as this would block unit test on this method
             if (DetailViewModel != null && DetailViewModel.HasChanges)
@@ -65,13 +65,19 @@ namespace SimpleBusinessApp.ViewModel
                     return;
                 }
             }
-            DetailViewModel = _clientDetailViewModelCreator();
-            await DetailViewModel.LoadAsync(clientId);
+            switch (args.ViewModelName)
+            {
+                case nameof(ClientDetailViewModel):
+                    DetailViewModel = _clientDetailViewModelCreator();
+                    break;
+            }
+
+            await DetailViewModel.LoadAsync(args.Id);
         }
 
         private void OnCreateNewClientExecute()
         {
-            OnOpenClientDetailView(null);
+            OnOpenDetailView(null);
         }
     }
 
