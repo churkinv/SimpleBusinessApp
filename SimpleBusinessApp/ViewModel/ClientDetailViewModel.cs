@@ -76,7 +76,7 @@ namespace SimpleBusinessApp.ViewModel
         public ObservableCollection<LookupItem> Companies { get; }
         public ObservableCollection<ClientPhoneNumberWrapper> PhoneNumbers { get; }
 
-        public ClientDetailViewModel(IClientRepository clientRepository, 
+        public ClientDetailViewModel(IClientRepository clientRepository,
             IEventAggregator eventAggregator, IMessageDialogService messageDialogService,
             ICompanyLookupDataService companyLookupDataService)
         {
@@ -96,14 +96,19 @@ namespace SimpleBusinessApp.ViewModel
 
         private async void OnDeleteExecute()
         {
-            var result = _messageDialogService.ShowOkCancelDialog("Do you really want to delete the Client?", 
+            var result = _messageDialogService.ShowOkCancelDialog("Do you really want to delete the Client?",
                 "Question");
             if (result == MessageDialogResult.Ok)
             {
                 _clientRepository.Remove(Client.Model);
                 await _clientRepository.SaveAsync();
-                _eventAggregator.GetEvent<AfterClientDeletedEvent>().Publish(Client.Id);
-            }          
+                _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Publish(
+                    new AfterDetailDeletedEventArgs
+                    {
+                        Id = Client.Id,
+                        ViewModelName = nameof(ClientDetailViewModel)
+                    });
+            }
         }
 
         public async Task LoadAsync(int? clientId)
@@ -175,7 +180,7 @@ namespace SimpleBusinessApp.ViewModel
         private async Task LoadCompaniesAsync()
         {
             Companies.Clear();
-            Companies.Add(new NullLookupItem{DisplayMember = " - " }); // to have possibility to display Null (or specific sign) in our combobox
+            Companies.Add(new NullLookupItem { DisplayMember = " - " }); // to have possibility to display Null (or specific sign) in our combobox
             var lookup = await _companyLookupDataService.GetCompanyLookupAsync();
 
             foreach (var lookupItem in lookup)
@@ -206,9 +211,9 @@ namespace SimpleBusinessApp.ViewModel
 
         private bool OnSaveCanExecute()
         {
-            return Client != null 
-                && !Client.HasErrors 
-                && PhoneNumbers.All(pn=>!pn.HasErrors)
+            return Client != null
+                && !Client.HasErrors
+                && PhoneNumbers.All(pn => !pn.HasErrors)
                 && HasChanges;
         }
 
@@ -230,7 +235,7 @@ namespace SimpleBusinessApp.ViewModel
             SelectedPhoneNumber = null;
             HasChanges = _clientRepository.HasChanges();
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
-        }      
+        }
 
         private bool OnRemovePhoneNumberCanExecute()
         {

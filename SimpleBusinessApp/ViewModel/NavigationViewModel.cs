@@ -21,8 +21,8 @@ namespace SimpleBusinessApp.ViewModel
             _eventAggregator = eventAggregator;
             Clients = new ObservableCollection<NavigationItemViewModel>();
             _eventAggregator.GetEvent<AfterClientSaveEvent>().Subscribe(AfterClientSaved);
-            _eventAggregator.GetEvent<AfterClientDeletedEvent>().Subscribe(AfterClientDeleted);
-        }      
+            _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted);
+        }
 
         public async Task LoadAsync()
         {
@@ -47,13 +47,23 @@ namespace SimpleBusinessApp.ViewModel
             }
         }
 
-        private void AfterClientDeleted(int clientId)
+        private void AfterDetailDeleted(AfterDetailDeletedEventArgs args)
         {
-            var client = Clients.SingleOrDefault(c => c.Id == clientId);
-            if (client != null)
+
+            switch (args.ViewModelName)
             {
-                Clients.Remove(client);
+                case nameof(ClientDetailViewModel):
+                    var client = Clients.SingleOrDefault(c => c.Id == args.Id);
+                    if (client != null)
+                    {
+                        Clients.Remove(client);
+                    }
+                    break;
+
+                    // for another entity just create new case
             }
+
+
         }
     }
 }
