@@ -5,26 +5,22 @@ using System.Threading.Tasks;
 
 namespace SimpleBusinessApp.Data.Repositories
 {
+
     /// <summary>
     /// This class is dedicated for uploading CLients from DB
     /// </summary>
-    public class ClientRepository : IClientRepository
+    public class ClientRepository : GenericRepository<Client, ClientOrganizerDbContext>,
+        IClientRepository
     {
-        private ClientOrganizerDbContext _context;
-
-        public ClientRepository(ClientOrganizerDbContext context) // Func<ClientOrganizerDbContext> contextCreator ?we used Func to "get" autofac injection? --> then changed it to use context
+       
+        public ClientRepository(ClientOrganizerDbContext context) : 
+            base(context)
         {
-            _context = context;
         }
 
-        public void Add(Client client)
+        public override async Task<Client> GetByIdAsync(int clientId)
         {
-            _context.Clients.Add(client);
-        }
-
-        public async Task<Client> GetByIdAsync(int clientId)
-        {
-            return await _context.Clients
+            return await Context.Clients
                 .Include(ph => ph.PhoneNumbers)
                 .SingleAsync(f => f.Id == clientId); // to get data from DB
 
@@ -35,24 +31,9 @@ namespace SimpleBusinessApp.Data.Repositories
             //yield return new Client { FirstName = "Chrissi", LastName = "Egin" };
         }
 
-        public bool HasChanges()
-        {
-            return _context.ChangeTracker.HasChanges();
-        }
-
-        public void Remove(Client model)
-        {
-            _context.Clients.Remove(model);
-        }
-
         public void RemovePhoneNumber(ClientPhoneNumber model)
         {
-            _context.ClientPhoneNumbers.Remove(model);
-        }
-
-        public async Task SaveAsync()
-        {
-            await _context.SaveChangesAsync();
+            Context.ClientPhoneNumbers.Remove(model);
         }
     }
 }
