@@ -2,14 +2,15 @@
 
 namespace SimpleBusinessApp.Event
 {
-    public class AfterClientSaveEvent : PubSubEvent<AfterClientSaveEventArgs>
+    public class AfterDetailSaveEvent : PubSubEvent<AfterDetailSaveEventArgs>
     {
 
     }
 
-    public class AfterClientSaveEventArgs
+    public class AfterDetailSaveEventArgs
     {
         public int Id { get; set; }
         public string DisplayMember { get; set; }
+        public string ViewModelName { get; set; }
     }
 }

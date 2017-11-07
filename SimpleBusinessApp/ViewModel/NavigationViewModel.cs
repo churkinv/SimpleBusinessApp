@@ -20,7 +20,7 @@ namespace SimpleBusinessApp.ViewModel
             _clientLookupDataService = clientLookupDataService;
             _eventAggregator = eventAggregator;
             Clients = new ObservableCollection<NavigationItemViewModel>();
-            _eventAggregator.GetEvent<AfterClientSaveEvent>().Subscribe(AfterClientSaved);
+            _eventAggregator.GetEvent<AfterDetailSaveEvent>().Subscribe(AfterDetailSaved);
             _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted);
         }
 
@@ -34,16 +34,22 @@ namespace SimpleBusinessApp.ViewModel
             }
         }
 
-        private void AfterClientSaved(AfterClientSaveEventArgs obj)
+        private void AfterDetailSaved(AfterDetailSaveEventArgs obj)
         {
-            var lookupItem = Clients.SingleOrDefault(l => l.Id == obj.Id);
-            if (lookupItem == null)
+            switch (obj.ViewModelName)
             {
-                Clients.Add(new NavigationItemViewModel(obj.Id, obj.DisplayMember, nameof(ClientDetailViewModel), _eventAggregator));
-            }
-            else
-            {
-                lookupItem.DisplayMember = obj.DisplayMember;
+                case nameof(ClientDetailViewModel):
+
+                    var lookupItem = Clients.SingleOrDefault(l => l.Id == obj.Id);
+                    if (lookupItem == null)
+                    {
+                        Clients.Add(new NavigationItemViewModel(obj.Id, obj.DisplayMember, nameof(ClientDetailViewModel), _eventAggregator));
+                    }
+                    else
+                    {
+                        lookupItem.DisplayMember = obj.DisplayMember;
+                    }
+                    break;
             }
         }
 

@@ -201,11 +201,12 @@ namespace SimpleBusinessApp.ViewModel
         {
             await _clientRepository.SaveAsync();
             HasChanges = _clientRepository.HasChanges();
-            _eventAggregator.GetEvent<AfterClientSaveEvent>().Publish(
-                new AfterClientSaveEventArgs
+            _eventAggregator.GetEvent<AfterDetailSaveEvent>().Publish(
+                new AfterDetailSaveEventArgs
                 {
                     Id = Client.Id,
-                    DisplayMember = $"{Client.FirstName} {Client.LastName}"
+                    DisplayMember = $"{Client.FirstName} {Client.LastName}",
+                    ViewModelName = nameof(ClientDetailViewModel)
                 });
         }
 
