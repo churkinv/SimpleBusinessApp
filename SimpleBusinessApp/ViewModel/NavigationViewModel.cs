@@ -65,11 +65,8 @@ namespace SimpleBusinessApp.ViewModel
                         Clients.Remove(client);
                     }
                     break;
-
                     // for another entity just create new case
             }
-
-
         }
     }
 }

@@ -15,7 +15,7 @@ namespace SimpleBusinessApp.ViewModel
         private IMessageDialogService _messageDialogService;
         private IDetailViewModel _detailViewModel;
 
-        public ICommand CreateNewClientCommand { get; }
+        public ICommand CreateNewDetailCommand { get; }
         public INavigationViewModel NavigationViewModel { get; }
         public IDetailViewModel DetailViewModel
         {
@@ -39,7 +39,7 @@ namespace SimpleBusinessApp.ViewModel
               .Subscribe(OnOpenDetailView);
             _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted);
 
-            CreateNewClientCommand = new DelegateCommand(OnCreateNewClientExecute);
+            CreateNewDetailCommand = new DelegateCommand<Type>(OnCreateNewDetailExecute);
 
             NavigationViewModel = navigationViewModel;        
         }
@@ -70,9 +70,10 @@ namespace SimpleBusinessApp.ViewModel
             await DetailViewModel.LoadAsync(args.Id);
         }
 
-        private void OnCreateNewClientExecute()
+        private void OnCreateNewDetailExecute(Type viewModelType)
         {
-            OnOpenDetailView(null);
+            OnOpenDetailView(
+                new OpenDetailViewEventArgs { ViewModelName = viewModelType.Name});
         }
 
         private void AfterDetailDeleted(AfterDetailDeletedEventArgs args)

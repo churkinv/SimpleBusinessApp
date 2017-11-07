@@ -26,7 +26,8 @@
         </Grid.ColumnDefinitions>
         <Menu Grid.ColumnSpan="2" FontSize="20">
             <MenuItem Header="Create">
-                <MenuItem Header="New Client" Command="{Binding CreateNewClientCommand}"/>
+                <MenuItem Header="New Client" Command="{Binding CreateNewDetailCommand}"
+                          CommandParameter="{x:Type viewModel:ClientDetailViewModel}"/>
             </MenuItem>
         </Menu>
         <view:NavigationView Grid.Row="1" 
