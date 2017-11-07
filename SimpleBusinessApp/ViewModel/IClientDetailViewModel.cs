@@ -1,10 +1,9 @@
-﻿using System.Threading.Tasks;
-
-namespace SimpleBusinessApp.ViewModel
+﻿namespace SimpleBusinessApp.ViewModel
 {
-    public interface IClientDetailViewModel
+
+
+    public interface IClientDetailViewModel : IDetailViewModel
     {
-        Task LoadAsync(int? clientId);
-        bool HasChanges { get; }
+        
     }
 }

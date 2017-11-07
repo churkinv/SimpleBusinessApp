@@ -34,7 +34,7 @@
         
         <ContentControl Grid.Row="1"
                                Grid.Column="1"
-                               Content="{Binding ClientDetailViewModel}"/>
+                               Content="{Binding DetailViewModel}"/>
         
         <!--<ListView ItemsSource="{Binding Clients}"  
                   SelectedItem="{Binding SelectedClient, Mode=TwoWay}"

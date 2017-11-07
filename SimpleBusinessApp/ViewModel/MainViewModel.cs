@@ -13,16 +13,16 @@ namespace SimpleBusinessApp.ViewModel
         private IEventAggregator _eventAggregator;
         private Func<IClientDetailViewModel> _clientDetailViewModelCreator;
         private IMessageDialogService _messageDialogService;
-        private IClientDetailViewModel _clientDetailViewModel;
+        private IDetailViewModel _detailViewModel;
 
         public ICommand CreateNewClientCommand { get; }
         public INavigationViewModel NavigationViewModel { get; }
-        public IClientDetailViewModel ClientDetailViewModel
+        public IDetailViewModel DetailViewModel
         {
-            get { return _clientDetailViewModel; }
+            get { return _detailViewModel; }
             set
             {
-                _clientDetailViewModel = value;
+                _detailViewModel = value;
                 OnPropertyChanged();
             }            
         }
@@ -46,7 +46,7 @@ namespace SimpleBusinessApp.ViewModel
 
         private void AfterClientDeleted(int clientId)
         {
-            ClientDetailViewModel = null;
+            DetailViewModel = null;
         }
 
         public async Task LoadAsync()
@@ -57,7 +57,7 @@ namespace SimpleBusinessApp.ViewModel
         private async void OnOpenClientDetailView(int? clientId)
         {
             //it is not a good idea to use MessageBox directly in our viewmodel as this would block unit test on this method
-            if (ClientDetailViewModel != null && ClientDetailViewModel.HasChanges)
+            if (DetailViewModel != null && DetailViewModel.HasChanges)
             {
                 var result = _messageDialogService.ShowOkCancelDialog("You`ve made changes. Do you wish to leave?", "Question");
                 if (result == MessageDialogResult.Cancel)
@@ -65,8 +65,8 @@ namespace SimpleBusinessApp.ViewModel
                     return;
                 }
             }
-            ClientDetailViewModel = _clientDetailViewModelCreator();
-            await ClientDetailViewModel.LoadAsync(clientId);
+            DetailViewModel = _clientDetailViewModelCreator();
+            await DetailViewModel.LoadAsync(clientId);
         }
 
         private void OnCreateNewClientExecute()
