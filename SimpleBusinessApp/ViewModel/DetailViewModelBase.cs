@@ -66,7 +66,5 @@ namespace SimpleBusinessApp.ViewModel
         }
 
         public abstract Task LoadAsync(int? Id); 
-
-
     }
 }

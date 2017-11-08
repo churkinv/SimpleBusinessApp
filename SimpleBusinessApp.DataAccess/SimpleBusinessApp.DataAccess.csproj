@@ -60,6 +60,10 @@
     <Compile Include="Migrations\201711062047212_AddedClientNumbers.Designer.cs">
       <DependentUpon>201711062047212_AddedClientNumbers.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711082058116_AddedMeeting.cs" />
+    <Compile Include="Migrations\201711082058116_AddedMeeting.Designer.cs">
+      <DependentUpon>201711082058116_AddedMeeting.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -84,6 +88,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711062047212_AddedClientNumbers.resx">
       <DependentUpon>201711062047212_AddedClientNumbers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711082058116_AddedMeeting.resx">
+      <DependentUpon>201711082058116_AddedMeeting.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

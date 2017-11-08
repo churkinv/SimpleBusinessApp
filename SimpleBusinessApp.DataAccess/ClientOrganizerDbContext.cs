@@ -13,6 +13,8 @@ namespace SimpleBusinessApp.DataAccess
 
         public DbSet<ClientPhoneNumber> ClientPhoneNumbers { get; set; }
 
+        public DbSet<Meeting> Meetings { get; set; }
+
         public ClientOrganizerDbContext() : base ("ClientOrganizerDb") // then we have to add connecition string in config file with this name
         {
 

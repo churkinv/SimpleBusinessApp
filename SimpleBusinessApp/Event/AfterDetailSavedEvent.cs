@@ -4,7 +4,6 @@ namespace SimpleBusinessApp.Event
 {
     public class AfterDetailSavedEvent : PubSubEvent<AfterDetailSavedEventArgs>
     {
-
     }
 
     public class AfterDetailSavedEventArgs

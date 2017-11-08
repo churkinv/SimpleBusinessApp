@@ -5,14 +5,12 @@ using System.Threading.Tasks;
 
 namespace SimpleBusinessApp.Data.Repositories
 {
-
     /// <summary>
     /// This class is dedicated for uploading CLients from DB
     /// </summary>
     public class ClientRepository : GenericRepository<Client, ClientOrganizerDbContext>,
         IClientRepository
-    {
-       
+    {       
         public ClientRepository(ClientOrganizerDbContext context) : 
             base(context)
         {

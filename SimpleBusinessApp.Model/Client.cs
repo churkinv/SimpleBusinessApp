@@ -12,7 +12,8 @@ namespace SimpleBusinessApp.Model
     {
         public Client()
         {
-            PhoneNumbers = new Collection<ClientPhoneNumber>();       
+            PhoneNumbers = new Collection<ClientPhoneNumber>();
+            Meetings = new Collection<Meeting>();
         }
 
         //[Key] EF has a convention for Id property it will set is as Key automatically so no need attribute
@@ -34,6 +35,8 @@ namespace SimpleBusinessApp.Model
         public Company CompanyIsWorkingFor { get; set; }
 
         public ICollection<ClientPhoneNumber> PhoneNumbers { get; set; }
+
+        public ICollection<Meeting> Meetings { get; set; }
 
     }
 }

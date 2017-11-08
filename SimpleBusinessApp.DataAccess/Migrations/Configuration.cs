@@ -2,6 +2,7 @@ namespace SimpleBusinessApp.DataAccess.Migrations
 {
     using SimpleBusinessApp.Model;
     using System;
+    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
@@ -35,6 +36,21 @@ namespace SimpleBusinessApp.DataAccess.Migrations
 
             context.ClientPhoneNumbers.AddOrUpdate(pn => pn.Number,
                 new ClientPhoneNumber { Number = "+38 0670000000", ClientId = context.Clients.First().Id });
+
+
+            context.Meetings.AddOrUpdate(
+                m => m.Title,
+                new Meeting
+                {
+                    Title = "Have a beer with Client",
+                    DateFrom = new DateTime(2018, 1, 5),
+                    DateTo = new DateTime(2018, 1, 6),
+                    Clients = new List<Client>
+                    {
+                        context.Clients.Single(c => c.FirstName == "Batmans" && c.LastName == "Proffesor"),
+                        context.Clients.Single(c => c.FirstName == "Andriy" && c.LastName == "Alch")
+                    }
+                });
 
             //  This method will be called after migrating to the latest version.
 
