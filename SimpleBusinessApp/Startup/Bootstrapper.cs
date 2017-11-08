@@ -3,6 +3,7 @@ using Prism.Events;
 using SimpleBusinessApp.Data;
 using SimpleBusinessApp.Data.Lookups;
 using SimpleBusinessApp.Data.Repositories;
+using SimpleBusinessApp.Data.Repository;
 using SimpleBusinessApp.DataAccess;
 using SimpleBusinessApp.View.Services;
 using SimpleBusinessApp.ViewModel;
@@ -33,7 +34,7 @@ namespace SimpleBusinessApp.Startup
 
             builder.RegisterType<LookupDataService>().AsImplementedInterfaces();// we also could use IClientLookupDataService, but now LookupDataService will be injected all the func for that are implemented by the LookupDataService class
             builder.RegisterType<ClientRepository>().As<IClientRepository>(); // Container knows now when IClientDataService is required it will just create an instance of ClientDataService class
-          
+            builder.RegisterType<MeetingRepository>().As<IMeetingRepository>();
 
 
             return builder.Build();
