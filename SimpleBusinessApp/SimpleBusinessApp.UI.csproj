@@ -87,6 +87,7 @@
     </ApplicationDefinition>
     <Compile Include="Data\Lookups\IClientLookupDataService.cs" />
     <Compile Include="Data\Lookups\ICompanyLookupDataService.cs" />
+    <Compile Include="Data\Lookups\IMeetingLookupDataService.cs" />
     <Compile Include="Data\Lookups\LookupDataService.cs" />
     <Compile Include="Data\Repository\ClientRepository.cs" />
     <Compile Include="Data\Repository\GenericRepository.cs" />
