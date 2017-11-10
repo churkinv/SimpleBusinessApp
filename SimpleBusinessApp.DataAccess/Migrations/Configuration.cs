@@ -51,6 +51,10 @@ namespace SimpleBusinessApp.DataAccess.Migrations
                         context.Clients.Single(c => c.FirstName == "Andriy" && c.LastName == "Alch")
                     }
                 });
+              
+            }
+                    
+            
 
             //  This method will be called after migrating to the latest version.
 

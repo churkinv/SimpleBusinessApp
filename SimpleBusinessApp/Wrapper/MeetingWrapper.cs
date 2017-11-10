@@ -1,9 +1,5 @@
 ﻿using SimpleBusinessApp.Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SimpleBusinessApp.Wrapper
 {
@@ -15,7 +11,7 @@ namespace SimpleBusinessApp.Wrapper
 
         public int Id { get { return Model.Id; } }
 
-        public string Titel
+        public string Title
         {
             get { return GetValue<string>(); }
             set { SetValue(value); }
