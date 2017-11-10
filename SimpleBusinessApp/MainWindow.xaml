@@ -13,7 +13,12 @@
     <Window.Resources>
         <DataTemplate DataType="{x:Type viewModel:ClientDetailViewModel}">
             <view:ClientDetailView/>
-        </DataTemplate>        
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:MeetingDetailViewModel}">
+            <view:MeetingDetailView/>
+        </DataTemplate>
+        
     </Window.Resources>          
     <Grid>
         <Grid.RowDefinitions>
