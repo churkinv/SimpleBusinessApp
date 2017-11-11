@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using Autofac.Features.Indexed;
+using Prism.Commands;
 using Prism.Events;
 using SimpleBusinessApp.Event;
 using SimpleBusinessApp.View.Services;
@@ -11,8 +12,9 @@ namespace SimpleBusinessApp.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private IEventAggregator _eventAggregator;
-        private Func<IClientDetailViewModel> _clientDetailViewModelCreator;
-        private Func<IMeetingDetailViewModel> _meetingDetailViewModelCreator;
+        private IIndex<string, IDetailViewModel> _detailViewModelCreator;
+        //private Func<IClientDetailViewModel> _clientDetailViewModelCreator;
+        //private Func<IMeetingDetailViewModel> _meetingDetailViewModelCreator;
         private IMessageDialogService _messageDialogService;
         private IDetailViewModel _detailViewModel;
 
@@ -29,13 +31,13 @@ namespace SimpleBusinessApp.ViewModel
         }
 
         public MainViewModel(INavigationViewModel navigationViewModel, 
-            Func<IClientDetailViewModel> clientDetailViewModelCreator, 
-            Func<IMeetingDetailViewModel> meetingDetailViewModelCreator,
-            IEventAggregator eventAggregator, IMessageDialogService messageDialogService) 
+           IIndex<string, IDetailViewModel> detailViewModelCreator,
+            IEventAggregator eventAggregator, IMessageDialogService messageDialogService)  // it could be a problem with poluting a constructor with creating many different types of ViewModels -> we can use Autofac IIndex and thus we can delete Func<I....DetaileViewModel> 
         {
             _eventAggregator = eventAggregator;
-            _clientDetailViewModelCreator = clientDetailViewModelCreator;
-            _meetingDetailViewModelCreator = meetingDetailViewModelCreator;
+            _detailViewModelCreator = detailViewModelCreator;
+            //_clientDetailViewModelCreator = clientDetailViewModelCreator;
+            //_meetingDetailViewModelCreator = meetingDetailViewModelCreator;
             _messageDialogService = messageDialogService;
 
             _eventAggregator.GetEvent<OpenDetailViewEvent>()
@@ -63,20 +65,20 @@ namespace SimpleBusinessApp.ViewModel
                     return;
                 }
             }
-            switch (args.ViewModelName)
-            {
-                case nameof(ClientDetailViewModel):
-                    DetailViewModel = _clientDetailViewModelCreator();
-                    break;
+            //switch (args.ViewModelName)
+            //{
+            //    case nameof(ClientDetailViewModel):
+            //        DetailViewModel = _clientDetailViewModelCreator();
+            //        break;
 
-                case nameof(MeetingDetailViewModel):
-                    DetailViewModel = _meetingDetailViewModelCreator();
-                    break;
-                default:
-                    throw new Exception($"ViewModel {args.ViewModelName} not mapped");
-                    // break; is no need as we throw an exception
-            }
-
+            //    case nameof(MeetingDetailViewModel):
+            //        DetailViewModel = _meetingDetailViewModelCreator();
+            //        break;
+            //    default:
+            //        throw new Exception($"ViewModel {args.ViewModelName} not mapped");
+            //        // break; is no need as we throw an exception
+            //}-->
+            DetailViewModel = _detailViewModelCreator[args.ViewModelName];
             await DetailViewModel.LoadAsync(args.Id);
         }
 
