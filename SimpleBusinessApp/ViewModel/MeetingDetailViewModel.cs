@@ -84,7 +84,6 @@ namespace SimpleBusinessApp.ViewModel
             _allClients = await _meetingRepository.GetAllClientsAsync();
 
             SetupPicklist();
-
         }
 
         private void SetupPicklist()
@@ -171,7 +170,12 @@ namespace SimpleBusinessApp.ViewModel
 
         private void OnAddClientExecute()
         {
-
+            var clientToAdd = SelectedAvailableClient;
+            Meeting.Model.Clients.Add(clientToAdd);
+            AddedClients.Add(clientToAdd);
+            AvailableClients.Remove(clientToAdd);
+            HasChanges = _meetingRepository.HasChanges();
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
         }
 
         private bool OnRemoveClientCanExecute()
@@ -181,7 +185,12 @@ namespace SimpleBusinessApp.ViewModel
 
         private void OnRemoveClientExecute()
         {
-
+            var clientToRemove = SelectedAddedClient;
+            Meeting.Model.Clients.Remove(clientToRemove);
+            AddedClients.Remove(clientToRemove);
+            AvailableClients.Add(clientToRemove);
+            HasChanges = _meetingRepository.HasChanges();
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
         }
 
     }
