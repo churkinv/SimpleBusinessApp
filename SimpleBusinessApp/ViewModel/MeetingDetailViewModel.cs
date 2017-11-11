@@ -59,6 +59,11 @@ namespace SimpleBusinessApp.ViewModel
                  }
              };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+
+            if (Meeting.Id == 0)
+            {
+                Meeting.Title = "";
+            }
         }
 
         private Meeting CreateNewMeeting()
