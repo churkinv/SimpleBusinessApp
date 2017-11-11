@@ -3,6 +3,7 @@ using SimpleBusinessApp.Data.Repositories;
 using SimpleBusinessApp.DataAccess;
 using SimpleBusinessApp.Model;
 using System.Data.Entity;
+using System.Collections.Generic;
 
 namespace SimpleBusinessApp.Data.Repository
 {
@@ -19,5 +20,12 @@ namespace SimpleBusinessApp.Data.Repository
                 .Include(m => m.Clients)
                 .SingleAsync(m => m.Id == id);
         }
+
+        public async Task<List<Client>> GetAllClientsAsync ()
+        {
+            return await Context.Set<Client>()
+                .ToListAsync();
+        }
+          
     }
 }

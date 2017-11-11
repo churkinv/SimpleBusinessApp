@@ -8,6 +8,8 @@ using SimpleBusinessApp.Model;
 using Prism.Commands;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SimpleBusinessApp.ViewModel
 {
@@ -30,6 +32,8 @@ namespace SimpleBusinessApp.ViewModel
             }
         }
         private Client _selectedAddedClient;
+        private List<Client> _allClients;
+
         public Client SelectedAddedClient
         {
             get { return _selectedAddedClient; }
@@ -76,7 +80,30 @@ namespace SimpleBusinessApp.ViewModel
                 : CreateNewMeeting();
 
             InitializeMeeting(meeting);
-            //TODO: Load the clients for the picklist
+
+            _allClients = await _meetingRepository.GetAllClientsAsync();
+
+            SetupPicklist();
+
+        }
+
+        private void SetupPicklist()
+        {
+            var meetingClientIds = Meeting.Model.Clients.Select(c => c.Id).ToList();
+            var addedClients = _allClients.Where(c => meetingClientIds.Contains(c.Id)).OrderBy(c => c.FirstName);
+            var availibleClients = _allClients.Except(AddedClients).OrderBy(c => c.FirstName);
+
+            AddedClients.Clear();
+            AvailableClients.Clear();
+            foreach (var addedClient in addedClients)
+            {
+                AddedClients.Add(addedClient);
+            }
+
+            foreach (var availibleClient in availibleClients)
+            {
+                AvailableClients.Add(availibleClient);
+            }
         }
 
         private void InitializeMeeting(Meeting meeting)
