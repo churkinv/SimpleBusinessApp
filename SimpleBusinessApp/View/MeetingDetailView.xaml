@@ -19,7 +19,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Label Content="Title" Margin="10 10 10 0"/>
-        <TextBlock Grid.Row="1" Text="{Binding Meeting.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Grid.Row="1" Text="{Binding Meeting.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <Label Grid.Row="2" Content="Start" Margin="10 0"/>
         <toolkit:DateTimePicker Grid.Row="3" Value="{Binding Meeting.DateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

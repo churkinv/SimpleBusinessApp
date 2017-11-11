@@ -12,6 +12,7 @@ namespace SimpleBusinessApp.ViewModel
     {
         private IEventAggregator _eventAggregator;
         private Func<IClientDetailViewModel> _clientDetailViewModelCreator;
+        private Func<IMeetingDetailViewModel> _meetingDetailViewModelCreator;
         private IMessageDialogService _messageDialogService;
         private IDetailViewModel _detailViewModel;
 
@@ -29,14 +30,16 @@ namespace SimpleBusinessApp.ViewModel
 
         public MainViewModel(INavigationViewModel navigationViewModel, 
             Func<IClientDetailViewModel> clientDetailViewModelCreator, 
+            Func<IMeetingDetailViewModel> meetingDetailViewModelCreator,
             IEventAggregator eventAggregator, IMessageDialogService messageDialogService) 
         {
             _eventAggregator = eventAggregator;
             _clientDetailViewModelCreator = clientDetailViewModelCreator;
+            _meetingDetailViewModelCreator = meetingDetailViewModelCreator;
             _messageDialogService = messageDialogService;
 
             _eventAggregator.GetEvent<OpenDetailViewEvent>()
-              .Subscribe(OnOpenDetailView);
+              .Subscribe(OnOpenDetailView); // this event is published by NavigationViewModel when an item is clicked
             _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted);
 
             CreateNewDetailCommand = new DelegateCommand<Type>(OnCreateNewDetailExecute);
@@ -65,6 +68,13 @@ namespace SimpleBusinessApp.ViewModel
                 case nameof(ClientDetailViewModel):
                     DetailViewModel = _clientDetailViewModelCreator();
                     break;
+
+                case nameof(MeetingDetailViewModel):
+                    DetailViewModel = _meetingDetailViewModelCreator();
+                    break;
+                default:
+                    throw new Exception($"ViewModel {args.ViewModelName} not mapped");
+                    // break; is no need as we throw an exception
             }
 
             await DetailViewModel.LoadAsync(args.Id);
@@ -80,8 +90,6 @@ namespace SimpleBusinessApp.ViewModel
         {
             DetailViewModel = null;
         }
-
     }
-
 }
 
