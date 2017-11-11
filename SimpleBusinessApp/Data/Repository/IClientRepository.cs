@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SimpleBusinessApp.Model;
+using System.Threading.Tasks;
 
 namespace SimpleBusinessApp.Data.Repositories
 {
@@ -9,5 +10,6 @@ namespace SimpleBusinessApp.Data.Repositories
     public interface IClientRepository : IGenericRepository<Client>
     {       
         void RemovePhoneNumber(ClientPhoneNumber model);
+        Task<bool> HasMeetingsAsync(int clientId);
     }
 }

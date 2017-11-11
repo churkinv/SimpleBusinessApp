@@ -1,6 +1,7 @@
 ﻿using SimpleBusinessApp.DataAccess;
 using SimpleBusinessApp.Model;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SimpleBusinessApp.Data.Repositories
@@ -32,6 +33,13 @@ namespace SimpleBusinessApp.Data.Repositories
         public void RemovePhoneNumber(ClientPhoneNumber model)
         {
             Context.ClientPhoneNumbers.Remove(model);
+        }
+
+        public async Task<bool> HasMeetingsAsync (int clientId)
+        {
+            return await Context.Meetings.AsNoTracking()
+                .Include(m => m.Clients)
+                .AnyAsync(m => m.Clients.Any(c => c.Id == clientId));
         }
     }
 }

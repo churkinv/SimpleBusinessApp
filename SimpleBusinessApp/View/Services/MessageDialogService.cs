@@ -17,5 +17,10 @@ namespace SimpleBusinessApp.View.Services
                 ? MessageDialogResult.Ok
                 : MessageDialogResult.Cancel;
         }
+
+        public void ShowInfoDialog(string text)
+        {
+            MessageBox.Show(text, "Info");
+        }
     }
 }

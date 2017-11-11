@@ -177,6 +177,12 @@ namespace SimpleBusinessApp.ViewModel
 
         protected override async void OnDeleteExecute()
         {
+            if(await _clientRepository.HasMeetingsAsync(Client.Id))
+            {
+                _messageDialogService.ShowInfoDialog($"{Client.FirstName} {Client.LastName} can`t be deleted as this client is part of at least one meeting");
+                return;
+            }
+
             var result = _messageDialogService.ShowOkCancelDialog("Do you really want to delete the Client?",
                 "Question");
             if (result == MessageDialogResult.Ok)
