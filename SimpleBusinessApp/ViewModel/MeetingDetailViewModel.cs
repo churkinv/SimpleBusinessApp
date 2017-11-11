@@ -6,6 +6,8 @@ using System;
 using System.Threading.Tasks;
 using SimpleBusinessApp.Model;
 using Prism.Commands;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace SimpleBusinessApp.ViewModel
 {
@@ -16,14 +18,47 @@ namespace SimpleBusinessApp.ViewModel
         private MeetingWrapper _meeting;
         private IMessageDialogService _messageDialogService;
 
+        private Client _selectedAvailableClient;
+        public Client SelectedAvailableClient
+        {
+            get { return _selectedAvailableClient; }
+            set
+            {
+                _selectedAvailableClient = value;
+                OnPropertyChanged();
+                ((DelegateCommand)AddClientCommand).RaiseCanExecuteChanged();
+            }
+        }
+        private Client _selectedAddedClient;
+        public Client SelectedAddedClient
+        {
+            get { return _selectedAddedClient; }
+            set
+            {
+                _selectedAddedClient = value;
+                OnPropertyChanged();
+                ((DelegateCommand)RemoveClientCommand).RaiseCanExecuteChanged();
+            }
+        }
+
+        public ICommand AddClientCommand { get; }
+        public ICommand RemoveClientCommand { get; }
+
+        public ObservableCollection<Client> AddedClients { get; }
+        public ObservableCollection<Client> AvailableClients { get; }
+
         public MeetingDetailViewModel(IEventAggregator eventAggregator, IMessageDialogService messageDialogService, 
             IMeetingRepository meetingRepository) : base (eventAggregator)
         {
             _meetingRepository = meetingRepository;
             _messageDialogService = messageDialogService;
+
+            AddedClients = new ObservableCollection<Client>();
+            AvailableClients = new ObservableCollection<Client>();
+            AddClientCommand = new DelegateCommand(OnAddClientExecute, OnAddClientCanExecute);
+            RemoveClientCommand = new DelegateCommand(OnRemoveClientExecute, OnRemoveClientCanExecute);
         }
-
-
+       
         public MeetingWrapper Meeting
         {
             get { return _meeting; }
@@ -41,6 +76,7 @@ namespace SimpleBusinessApp.ViewModel
                 : CreateNewMeeting();
 
             InitializeMeeting(meeting);
+            //TODO: Load the clients for the picklist
         }
 
         private void InitializeMeeting(Meeting meeting)
@@ -101,6 +137,25 @@ namespace SimpleBusinessApp.ViewModel
             }
         }
 
-      
+        private bool OnAddClientCanExecute()
+        {
+            return SelectedAvailableClient != null;
+        }
+
+        private void OnAddClientExecute()
+        {
+
+        }
+
+        private bool OnRemoveClientCanExecute()
+        {
+            return SelectedAddedClient != null;
+        }
+
+        private void OnRemoveClientExecute()
+        {
+
+        }
+
     }
 }
