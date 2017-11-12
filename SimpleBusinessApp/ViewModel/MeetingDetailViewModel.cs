@@ -79,6 +79,8 @@ namespace SimpleBusinessApp.ViewModel
                 ? await _meetingRepository.GetByIdAsync(meetingId.Value)
                 : CreateNewMeeting();
 
+            Id = meeting.Id;
+
             InitializeMeeting(meeting);
 
             _allClients = await _meetingRepository.GetAllClientsAsync();
@@ -149,6 +151,7 @@ namespace SimpleBusinessApp.ViewModel
         {
             await _meetingRepository.SaveAsync();
             HasChanges = _meetingRepository.HasChanges();
+            Id = Meeting.Id;
             RaiseDetailSavedEvent(Meeting.Id, Meeting.Title);
         }
 

@@ -39,6 +39,15 @@ namespace SimpleBusinessApp.ViewModel
             }
         }
 
+        private int _id;
+
+        public int Id
+        {
+            get { return _id; }
+            protected set { _id = value; }
+        }
+
+
         public DetailViewModelBase(IEventAggregator eventAggregator)
         {
             EventAggragator = eventAggregator;

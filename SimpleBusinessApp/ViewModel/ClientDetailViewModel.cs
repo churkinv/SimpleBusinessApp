@@ -80,6 +80,8 @@ namespace SimpleBusinessApp.ViewModel
                 ? await _clientRepository.GetByIdAsync(clientId.Value)
                 : CreateNewClient();
 
+            Id = client.Id;
+
             InitializeClient(client);
 
             InitializeClientPhoneNumbers(client.PhoneNumbers);
@@ -164,6 +166,7 @@ namespace SimpleBusinessApp.ViewModel
         {
             await _clientRepository.SaveAsync();
             HasChanges = _clientRepository.HasChanges();
+            Id = Client.Id;
             RaiseDetailSavedEvent(Client.Id, $"{Client.FirstName} {Client.LastName}");
         }
 

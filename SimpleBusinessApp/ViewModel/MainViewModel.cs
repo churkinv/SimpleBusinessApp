@@ -1,9 +1,11 @@
-﻿using Autofac.Features.Indexed;
+﻿    using Autofac.Features.Indexed;
 using Prism.Commands;
 using Prism.Events;
 using SimpleBusinessApp.Event;
 using SimpleBusinessApp.View.Services;
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -16,16 +18,19 @@ namespace SimpleBusinessApp.ViewModel
         //private Func<IClientDetailViewModel> _clientDetailViewModelCreator;
         //private Func<IMeetingDetailViewModel> _meetingDetailViewModelCreator;
         private IMessageDialogService _messageDialogService;
-        private IDetailViewModel _detailViewModel;
+        private IDetailViewModel _selectedDetailViewModel;
 
         public ICommand CreateNewDetailCommand { get; }
         public INavigationViewModel NavigationViewModel { get; }
-        public IDetailViewModel DetailViewModel
+
+        public ObservableCollection<IDetailViewModel> DetailViewModels { get; }
+
+        public IDetailViewModel SelectedDetailVIewModel
         {
-            get { return _detailViewModel; }
+            get { return _selectedDetailViewModel; }
             set
             {
-                _detailViewModel = value;
+                _selectedDetailViewModel = value;
                 OnPropertyChanged();
             }            
         }
@@ -36,9 +41,10 @@ namespace SimpleBusinessApp.ViewModel
         {
             _eventAggregator = eventAggregator;
             _detailViewModelCreator = detailViewModelCreator;
-            //_clientDetailViewModelCreator = clientDetailViewModelCreator;
-            //_meetingDetailViewModelCreator = meetingDetailViewModelCreator;
             _messageDialogService = messageDialogService;
+            DetailViewModels = new ObservableCollection<IDetailViewModel>();
+
+
 
             _eventAggregator.GetEvent<OpenDetailViewEvent>()
               .Subscribe(OnOpenDetailView); // this event is published by NavigationViewModel when an item is clicked
@@ -54,32 +60,22 @@ namespace SimpleBusinessApp.ViewModel
             await NavigationViewModel.LoadAsync();           
         }
 
-        private async void OnOpenDetailView(OpenDetailViewEventArgs args)
+        private async void OnOpenDetailView(OpenDetailViewEventArgs args) // when user clicked an item in the navigation this method is called
         {
             //it is not a good idea to use MessageBox directly in our viewmodel as this would block unit test on this method
-            if (DetailViewModel != null && DetailViewModel.HasChanges)
-            {
-                var result = _messageDialogService.ShowOkCancelDialog("You`ve made changes. Do you wish to leave?", "Question");
-                if (result == MessageDialogResult.Cancel)
-                {
-                    return;
-                }
-            }
-            //switch (args.ViewModelName)
-            //{
-            //    case nameof(ClientDetailViewModel):
-            //        DetailViewModel = _clientDetailViewModelCreator();
-            //        break;
 
-            //    case nameof(MeetingDetailViewModel):
-            //        DetailViewModel = _meetingDetailViewModelCreator();
-            //        break;
-            //    default:
-            //        throw new Exception($"ViewModel {args.ViewModelName} not mapped");
-            //        // break; is no need as we throw an exception
-            //}-->
-            DetailViewModel = _detailViewModelCreator[args.ViewModelName];
-            await DetailViewModel.LoadAsync(args.Id);
+            var detailViewModel = DetailViewModels
+                .SingleOrDefault(vm => vm.Id == args.Id
+                && vm.GetType().Name == args.ViewModelName);
+
+            if (detailViewModel == null)
+            {
+                detailViewModel = _detailViewModelCreator[args.ViewModelName];
+                await detailViewModel.LoadAsync(args.Id);
+                DetailViewModels.Add(detailViewModel);
+            }
+            
+            SelectedDetailVIewModel = detailViewModel;           
         }
 
         private void OnCreateNewDetailExecute(Type viewModelType)
@@ -90,7 +86,14 @@ namespace SimpleBusinessApp.ViewModel
 
         private void AfterDetailDeleted(AfterDetailDeletedEventArgs args)
         {
-            DetailViewModel = null;
+            var detailViewModel = DetailViewModels
+               .SingleOrDefault(vm => vm.Id == args.Id
+               && vm.GetType().Name == args.ViewModelName);
+
+            if (detailViewModel != null)
+            {
+                DetailViewModels.Remove(detailViewModel);
+            }
         }
     }
 }
