@@ -18,7 +18,7 @@ namespace SimpleBusinessApp.ViewModel
     {
 
         private IMeetingRepository _meetingRepository;
-        private MeetingWrapper _meeting;    
+        private MeetingWrapper _meeting;
         private Client _selectedAvailableClient;
         public Client SelectedAvailableClient
         {
@@ -50,8 +50,8 @@ namespace SimpleBusinessApp.ViewModel
         public ObservableCollection<Client> AddedClients { get; }
         public ObservableCollection<Client> AvailableClients { get; }
 
-        public MeetingDetailViewModel(IEventAggregator eventAggregator, IMessageDialogService messageDialogService, 
-            IMeetingRepository meetingRepository) : base (eventAggregator, messageDialogService)
+        public MeetingDetailViewModel(IEventAggregator eventAggregator, IMessageDialogService messageDialogService,
+            IMeetingRepository meetingRepository) : base(eventAggregator, messageDialogService)
         {
             _meetingRepository = meetingRepository;
             eventAggregator.GetEvent<AfterDetailSavedEvent>().Subscribe(AfterDetailSaved);
@@ -79,7 +79,7 @@ namespace SimpleBusinessApp.ViewModel
                 await _meetingRepository.ReloadClientAsync(args.Id);
                 _allClients = await _meetingRepository.GetAllClientsAsync();
                 SetupPicklist();
-            }            
+            }
         }
 
         public MeetingWrapper Meeting
@@ -92,13 +92,13 @@ namespace SimpleBusinessApp.ViewModel
             }
         }
 
-        public override async Task LoadAsync(int? meetingId)
+        public override async Task LoadAsync(int meetingId)
         {
-            var meeting = meetingId.HasValue
-                ? await _meetingRepository.GetByIdAsync(meetingId.Value)
+            var meeting = meetingId > 0
+                ? await _meetingRepository.GetByIdAsync(meetingId)
                 : CreateNewMeeting();
 
-            Id = meeting.Id;
+            Id = meetingId;
 
             InitializeMeeting(meeting);
 
@@ -157,7 +157,7 @@ namespace SimpleBusinessApp.ViewModel
 
         private void SetTitle()
         {
-           Title = Meeting.Title;
+            Title = Meeting.Title;
         }
 
         private Meeting CreateNewMeeting()
@@ -170,7 +170,7 @@ namespace SimpleBusinessApp.ViewModel
 
             _meetingRepository.Add(meeting);
             return meeting;
-        }     
+        }
 
         protected override bool OnSaveCanExecute()
         {

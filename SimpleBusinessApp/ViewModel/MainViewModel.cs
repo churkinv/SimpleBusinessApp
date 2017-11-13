@@ -19,12 +19,11 @@ namespace SimpleBusinessApp.ViewModel
         //private Func<IMeetingDetailViewModel> _meetingDetailViewModelCreator;
         private IMessageDialogService _messageDialogService;
         private IDetailViewModel _selectedDetailViewModel;
-
+        private int nextNewItemId = 0;
+        
         public ICommand CreateNewDetailCommand { get; }
         public INavigationViewModel NavigationViewModel { get; }
-
         public ObservableCollection<IDetailViewModel> DetailViewModels { get; }
-
         public IDetailViewModel SelectedDetailViewModel
         {
             get { return _selectedDetailViewModel; }
@@ -44,9 +43,7 @@ namespace SimpleBusinessApp.ViewModel
             _messageDialogService = messageDialogService;
             DetailViewModels = new ObservableCollection<IDetailViewModel>();
 
-
-
-            _eventAggregator.GetEvent<OpenDetailViewEvent>()
+            //_eventAggregator.GetEvent<OpenDetailViewEvent>()
               .Subscribe(OnOpenDetailView); // this event is published by NavigationViewModel when an item is clicked
             _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted);
             _eventAggregator.GetEvent<AfterDetailClosedEvent>().Subscribe(AfterDetailClosed);
@@ -79,10 +76,10 @@ namespace SimpleBusinessApp.ViewModel
             SelectedDetailViewModel = detailViewModel;           
         }
 
-        private void OnCreateNewDetailExecute(Type viewModelType)
+        private void OnCreateNewDetailExecute(Type viewModelType) // method for creating new detail command that is used by menu items
         {
             OnOpenDetailView(
-                new OpenDetailViewEventArgs { ViewModelName = viewModelType.Name});
+                new OpenDetailViewEventArgs { Id = nextNewItemId--, ViewModelName = viewModelType.Name});
         }
 
         private void AfterDetailDeleted(AfterDetailDeletedEventArgs args)

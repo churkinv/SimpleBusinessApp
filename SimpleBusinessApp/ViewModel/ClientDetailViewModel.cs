@@ -70,13 +70,13 @@ namespace SimpleBusinessApp.ViewModel
         }
 
 
-        public override async Task LoadAsync(int? clientId)
+        public override async Task LoadAsync(int clientId)
         {
-            var client = clientId.HasValue
-                ? await _clientRepository.GetByIdAsync(clientId.Value)
+            var client = clientId>0
+                ? await _clientRepository.GetByIdAsync(clientId)
                 : CreateNewClient();
 
-            Id = client.Id;
+            Id = clientId;
 
             InitializeClient(client);
 
