@@ -25,7 +25,7 @@ namespace SimpleBusinessApp.ViewModel
 
         public ObservableCollection<IDetailViewModel> DetailViewModels { get; }
 
-        public IDetailViewModel SelectedDetailVIewModel
+        public IDetailViewModel SelectedDetailViewModel
         {
             get { return _selectedDetailViewModel; }
             set
@@ -76,7 +76,7 @@ namespace SimpleBusinessApp.ViewModel
                 DetailViewModels.Add(detailViewModel);
             }
             
-            SelectedDetailVIewModel = detailViewModel;           
+            SelectedDetailViewModel = detailViewModel;           
         }
 
         private void OnCreateNewDetailExecute(Type viewModelType)

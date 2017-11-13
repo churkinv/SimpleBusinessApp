@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Collections.Generic;
 using System.Linq;
+using SimpleBusinessApp.Event;
 
 namespace SimpleBusinessApp.ViewModel
 {
@@ -53,13 +54,34 @@ namespace SimpleBusinessApp.ViewModel
             IMeetingRepository meetingRepository) : base (eventAggregator, messageDialogService)
         {
             _meetingRepository = meetingRepository;
-          
+            eventAggregator.GetEvent<AfterDetailSavedEvent>().Subscribe(AfterDetailSaved);
+            eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted);
+
             AddedClients = new ObservableCollection<Client>();
             AvailableClients = new ObservableCollection<Client>();
             AddClientCommand = new DelegateCommand(OnAddClientExecute, OnAddClientCanExecute);
             RemoveClientCommand = new DelegateCommand(OnRemoveClientExecute, OnRemoveClientCanExecute);
         }
-       
+
+        private async void AfterDetailDeleted(AfterDetailDeletedEventArgs args)
+        {
+            if (args.ViewModelName == nameof(ClientDetailViewModel))
+            {
+                _allClients = await _meetingRepository.GetAllClientsAsync();
+                SetupPicklist();
+            }
+        }
+
+        private async void AfterDetailSaved(AfterDetailSavedEventArgs args)
+        {
+            if (args.ViewModelName == nameof(ClientDetailViewModel))
+            {
+                await _meetingRepository.ReloadClientAsync(args.Id);
+                _allClients = await _meetingRepository.GetAllClientsAsync();
+                SetupPicklist();
+            }            
+        }
+
         public MeetingWrapper Meeting
         {
             get { return _meeting; }

@@ -4,6 +4,7 @@ using SimpleBusinessApp.DataAccess;
 using SimpleBusinessApp.Model;
 using System.Data.Entity;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SimpleBusinessApp.Data.Repository
 {
@@ -26,6 +27,15 @@ namespace SimpleBusinessApp.Data.Repository
             return await Context.Set<Client>()
                 .ToListAsync();
         }
-          
+
+        public async Task ReloadClientAsync(int clientId)
+        {
+            var dbEntityEntry = Context.ChangeTracker.Entries<Client>()
+                .SingleOrDefault(db => db.Entity.Id == clientId);
+            if (dbEntityEntry != null)
+            {
+                await dbEntityEntry.ReloadAsync();
+            }
+        }
     }
 }

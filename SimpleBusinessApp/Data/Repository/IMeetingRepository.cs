@@ -8,5 +8,6 @@ namespace SimpleBusinessApp.Data.Repository
     public interface IMeetingRepository : IGenericRepository<Meeting>
     {
         Task<List<Client>> GetAllClientsAsync();
+        Task ReloadClientAsync(int clientId);
     }
 }

@@ -83,7 +83,6 @@ namespace SimpleBusinessApp.ViewModel
             InitializeClientPhoneNumbers(client.PhoneNumbers);
 
             await LoadCompaniesAsync();
-
         }
 
         private void InitializeClientPhoneNumbers(ICollection<ClientPhoneNumber> phoneNumbers)
@@ -100,7 +99,6 @@ namespace SimpleBusinessApp.ViewModel
                 PhoneNumbers.Add(wrapper);
                 wrapper.PropertyChanged += ClientPhoneNumberWrapper_PropertyChanged;
             }
-
         }
 
         private void ClientPhoneNumberWrapper_PropertyChanged(object sender, PropertyChangedEventArgs e)
