@@ -23,11 +23,8 @@ namespace SimpleBusinessApp.ViewModel
     {
         private IClientRepository _clientRepository;
 
-        private IMessageDialogService _messageDialogService;
         private ICompanyLookupDataService _companyLookupDataService;
         private ClientWrapper _client;
-        private bool _hasChanges;
-
         public ClientWrapper Client
         {
             get { return _client; }
@@ -60,10 +57,9 @@ namespace SimpleBusinessApp.ViewModel
 
         public ClientDetailViewModel(IClientRepository clientRepository,
             IEventAggregator eventAggregator, IMessageDialogService messageDialogService,
-            ICompanyLookupDataService companyLookupDataService) : base(eventAggregator)
+            ICompanyLookupDataService companyLookupDataService) : base(eventAggregator, messageDialogService)
         {
             _clientRepository = clientRepository;
-            _messageDialogService = messageDialogService;
             _companyLookupDataService = companyLookupDataService;
 
             AddPhoneNumberCommand = new DelegateCommand(OnAddPhoneNumberExecute);
@@ -192,13 +188,13 @@ namespace SimpleBusinessApp.ViewModel
 
         protected override async void OnDeleteExecute()
         {
-            if(await _clientRepository.HasMeetingsAsync(Client.Id))
+            if (await _clientRepository.HasMeetingsAsync(Client.Id))
             {
-                _messageDialogService.ShowInfoDialog($"{Client.FirstName} {Client.LastName} can`t be deleted as this client is part of at least one meeting");
+                MessageDialogService.ShowInfoDialog($"{Client.FirstName} {Client.LastName} can`t be deleted as this client is part of at least one meeting");
                 return;
             }
 
-            var result = _messageDialogService.ShowOkCancelDialog("Do you really want to delete the Client?",
+            var result = MessageDialogService.ShowOkCancelDialog("Do you really want to delete the Client?",
                 "Question");
             if (result == MessageDialogResult.Ok)
             {

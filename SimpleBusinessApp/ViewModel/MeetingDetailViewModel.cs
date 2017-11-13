@@ -17,9 +17,7 @@ namespace SimpleBusinessApp.ViewModel
     {
 
         private IMeetingRepository _meetingRepository;
-        private MeetingWrapper _meeting;
-        private IMessageDialogService _messageDialogService;
-
+        private MeetingWrapper _meeting;    
         private Client _selectedAvailableClient;
         public Client SelectedAvailableClient
         {
@@ -52,11 +50,10 @@ namespace SimpleBusinessApp.ViewModel
         public ObservableCollection<Client> AvailableClients { get; }
 
         public MeetingDetailViewModel(IEventAggregator eventAggregator, IMessageDialogService messageDialogService, 
-            IMeetingRepository meetingRepository) : base (eventAggregator)
+            IMeetingRepository meetingRepository) : base (eventAggregator, messageDialogService)
         {
             _meetingRepository = meetingRepository;
-            _messageDialogService = messageDialogService;
-
+          
             AddedClients = new ObservableCollection<Client>();
             AvailableClients = new ObservableCollection<Client>();
             AddClientCommand = new DelegateCommand(OnAddClientExecute, OnAddClientCanExecute);
@@ -168,7 +165,7 @@ namespace SimpleBusinessApp.ViewModel
 
         protected override void OnDeleteExecute()
         {
-            var result = _messageDialogService.ShowOkCancelDialog($"Do you really want to delete the meeting {Meeting.Title}?", "Question");
+            var result = MessageDialogService.ShowOkCancelDialog($"Do you really want to delete the meeting {Meeting.Title}?", "Question");
             if (result == MessageDialogResult.Ok)
             {
                 _meetingRepository.Remove(Meeting.Model);

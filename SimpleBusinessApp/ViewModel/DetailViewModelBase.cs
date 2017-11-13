@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Events;
 using SimpleBusinessApp.Event;
+using SimpleBusinessApp.View.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace SimpleBusinessApp.ViewModel
         private bool _hasChanges;
 
         protected readonly IEventAggregator EventAggragator;
+
+        protected readonly IMessageDialogService MessageDialogService;
 
         protected abstract void OnDeleteExecute();
 
@@ -62,9 +65,11 @@ namespace SimpleBusinessApp.ViewModel
             }
         }
 
-        public DetailViewModelBase(IEventAggregator eventAggregator)
+        public DetailViewModelBase(IEventAggregator eventAggregator,
+            IMessageDialogService messageDialogService)
         {
             EventAggragator = eventAggregator;
+            MessageDialogService = messageDialogService;
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
             DeleteCommand = new DelegateCommand(OnDeleteExecute);
             CloseDetailViewCommand = new DelegateCommand(OnCloseDetailViewExecute);
@@ -91,9 +96,18 @@ namespace SimpleBusinessApp.ViewModel
 
         public abstract Task LoadAsync(int? Id);
 
-
         protected virtual void OnCloseDetailViewExecute()
         {
+            if (HasChanges)
+            {
+                var result = MessageDialogService.ShowOkCancelDialog(
+                    "You`ve made changes. Close this item?", "Question");
+                if (result == MessageDialogResult.Cancel)
+                {
+                    return;
+                }
+            }
+
             EventAggragator.GetEvent<AfterDetailClosedEvent>()
                  .Publish(new AfterDetailClosedEventArgs
                  {
