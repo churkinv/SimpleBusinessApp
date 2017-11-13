@@ -25,7 +25,9 @@ namespace SimpleBusinessApp.ViewModel
         public ICommand SaveCommand { get; private set; }
 
         public ICommand DeleteCommand { get; private set; }
-        
+
+        public ICommand CloseDetailViewCommand { get; }
+
         public bool HasChanges
         {
             get { return _hasChanges; }
@@ -65,6 +67,7 @@ namespace SimpleBusinessApp.ViewModel
             EventAggragator = eventAggregator;
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
             DeleteCommand = new DelegateCommand(OnDeleteExecute);
+            CloseDetailViewCommand = new DelegateCommand(OnCloseDetailViewExecute);
         }
 
         protected virtual void RaiseDetailSavedEvent(int modelId, string displayMember)
@@ -86,6 +89,17 @@ namespace SimpleBusinessApp.ViewModel
             });
         }
 
-        public abstract Task LoadAsync(int? Id); 
+        public abstract Task LoadAsync(int? Id);
+
+
+        protected virtual void OnCloseDetailViewExecute()
+        {
+            EventAggragator.GetEvent<AfterDetailClosedEvent>()
+                 .Publish(new AfterDetailClosedEventArgs
+                 {
+                     Id = this.Id,
+                     ViewModelName = this.GetType().Name
+                 });
+        }
     }
 }

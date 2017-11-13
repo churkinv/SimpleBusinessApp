@@ -18,8 +18,8 @@
         <DataTemplate DataType="{x:Type viewModel:MeetingDetailViewModel}">
             <view:MeetingDetailView/>
         </DataTemplate>
-        
-    </Window.Resources>          
+
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -48,17 +48,20 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Title}"/>
                         <TextBlock Text="*" Visibility="{Binding HasChanges, Converter={StaticResource booleanToVisibilityConverter}}"/>
+                        <Button Command="{Binding CloseDetailViewCommand}"
+                                VerticalAlignment="Top" Margin="2"
+                                Content="x" FontSize="20"/>
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
-        </TabControl>        
-        
-        
+        </TabControl>
+
+
         <!--<ListView ItemsSource="{Binding Clients}"  
                   SelectedItem="{Binding SelectedClient, Mode=TwoWay}"
                   DisplayMemberPath="FirstName"/> we commented it after creating NavigationView and we moved it ther NavigationView.xaml-->
         <!--  SelectedClientit is MainViewModel method-->
         <!-- Clients it is MainViewModel property-->
-        <!-- what we want to display-->       
-        </Grid>
+        <!-- what we want to display-->
+    </Grid>
 </Window>
