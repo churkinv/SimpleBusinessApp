@@ -13,6 +13,7 @@ namespace SimpleBusinessApp.ViewModel
     public abstract class DetailViewModelBase : ViewModelBase, IDetailViewModel
     {
         private bool _hasChanges;
+
         protected readonly IEventAggregator EventAggragator;
 
         protected abstract void OnDeleteExecute();
@@ -47,6 +48,17 @@ namespace SimpleBusinessApp.ViewModel
             protected set { _id = value; }
         }
 
+        private string _title;
+
+        public string Title
+        {
+            get { return _title; }
+            protected set
+            {
+                _title = value;
+                OnPropertyChanged();
+            }
+        }
 
         public DetailViewModelBase(IEventAggregator eventAggregator)
         {

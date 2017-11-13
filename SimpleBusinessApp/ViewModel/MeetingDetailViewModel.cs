@@ -121,6 +121,10 @@ namespace SimpleBusinessApp.ViewModel
                  {
                      ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
                  }
+                 if (e.PropertyName == nameof(Meeting.Title))
+                 {
+                     SetTitle();
+                 }
              };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
 
@@ -128,6 +132,13 @@ namespace SimpleBusinessApp.ViewModel
             {
                 Meeting.Title = "";
             }
+
+            SetTitle();
+        }
+
+        private void SetTitle()
+        {
+           Title = Meeting.Title;
         }
 
         private Meeting CreateNewMeeting()

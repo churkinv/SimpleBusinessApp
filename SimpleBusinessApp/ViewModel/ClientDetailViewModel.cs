@@ -132,6 +132,12 @@ namespace SimpleBusinessApp.ViewModel
                 {
                     ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
                 }
+                if (e.PropertyName == nameof(Client.FirstName)
+                || e.PropertyName == nameof(Client.LastName))
+                {
+                    SetTitle();
+                }
+
             };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
 
@@ -140,6 +146,12 @@ namespace SimpleBusinessApp.ViewModel
                 // manipulation to trigger the validation
                 Client.FirstName = "";
             }
+            SetTitle();
+        }
+
+        private void SetTitle()
+        {
+            Title = $"{Client.FirstName} {Client.LastName}";
         }
 
         private async Task LoadCompaniesAsync()

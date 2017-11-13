@@ -46,14 +46,12 @@
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Title"/>
+                        <TextBlock Text="{Binding Title}"/>
                         <TextBlock Text="*" Visibility="{Binding HasChanges, Converter={StaticResource booleanToVisibilityConverter}}"/>
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
-        </TabControl> 
-
-       
+        </TabControl>        
         
         
         <!--<ListView ItemsSource="{Binding Clients}"  
