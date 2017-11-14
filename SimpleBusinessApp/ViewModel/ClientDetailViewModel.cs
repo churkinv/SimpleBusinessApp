@@ -62,6 +62,9 @@ namespace SimpleBusinessApp.ViewModel
             _clientRepository = clientRepository;
             _companyLookupDataService = companyLookupDataService;
 
+            eventAggregator.GetEvent<AfterCollectionSavedEvent>()
+                .Subscribe(AfterCollectionSavedAsync);
+
             AddPhoneNumberCommand = new DelegateCommand(OnAddPhoneNumberExecute);
             RemovePhoneNumberCommand = new DelegateCommand(OnRemovePhoneNumberExecute, OnRemovePhoneNumberCanExecute);
 
@@ -69,10 +72,9 @@ namespace SimpleBusinessApp.ViewModel
             PhoneNumbers = new ObservableCollection<ClientPhoneNumberWrapper>();
         }
 
-
         public override async Task LoadAsync(int clientId)
         {
-            var client = clientId>0
+            var client = clientId > 0
                 ? await _clientRepository.GetByIdAsync(clientId)
                 : CreateNewClient();
 
@@ -82,7 +84,7 @@ namespace SimpleBusinessApp.ViewModel
 
             InitializeClientPhoneNumbers(client.PhoneNumbers);
 
-            await LoadCompaniesAsync();
+            await LoadCompaniesLookupAsync();
         }
 
         private void InitializeClientPhoneNumbers(ICollection<ClientPhoneNumber> phoneNumbers)
@@ -148,7 +150,7 @@ namespace SimpleBusinessApp.ViewModel
             Title = $"{Client.FirstName} {Client.LastName}";
         }
 
-        private async Task LoadCompaniesAsync()
+        private async Task LoadCompaniesLookupAsync()
         {
             Companies.Clear();
             Companies.Add(new NullLookupItem { DisplayMember = " - " }); // to have possibility to display Null (or specific sign) in our combobox
@@ -226,5 +228,15 @@ namespace SimpleBusinessApp.ViewModel
         {
             return SelectedPhoneNumber != null;
         }
+
+
+        private async void AfterCollectionSavedAsync(AfterCollectionSavedEventArgs args)
+        {
+            if (args.ViewModelName == nameof(CompanyDetailViewModel))
+            {
+                await LoadCompaniesLookupAsync();
+            }
+        }
+
     }
 }

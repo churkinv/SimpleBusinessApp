@@ -75,6 +75,7 @@ namespace SimpleBusinessApp.ViewModel
         {
             await _companyRepository.SaveAsync();
             HasChanges = _companyRepository.HasChanges();
+            RaiseCollectionSavedEvent();
         }
     }
 }

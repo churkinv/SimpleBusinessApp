@@ -115,5 +115,15 @@ namespace SimpleBusinessApp.ViewModel
                      ViewModelName = this.GetType().Name
                  });
         }
+
+        protected virtual void RaiseCollectionSavedEvent()
+        {
+            EventAggragator.GetEvent<AfterCollectionSavedEvent>()
+                .Publish(new AfterCollectionSavedEventArgs
+                {
+                    ViewModelName = this.GetType().Name
+                });
+        }
     }
 }
+
