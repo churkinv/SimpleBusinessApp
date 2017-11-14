@@ -63,7 +63,7 @@ namespace SimpleBusinessApp.ViewModel
                     SelectedCompany.Id);
             if (isReferenced)
             {
-                MessageDialogService.ShowInfoDialog($"The company {SelectedCompany.Name} as it referenced by at least one Client ");
+                await MessageDialogService.ShowInfoDialogAsync($"The company {SelectedCompany.Name} as it referenced by at least one Client ");
                 return;
             }
 
@@ -137,7 +137,7 @@ namespace SimpleBusinessApp.ViewModel
                 {
                     ex = ex.InnerException;
                 }
-                MessageDialogService.ShowInfoDialog("Error while saving the entities, " +
+                await MessageDialogService.ShowInfoDialogAsync("Error while saving the entities, " +
                     "the data be reloaded. Details: " + ex.Message);
                 await LoadAsync(Id);
             }
