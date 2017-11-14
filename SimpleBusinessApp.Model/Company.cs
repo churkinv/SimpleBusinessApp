@@ -18,9 +18,8 @@ namespace SimpleBusinessApp.Model
 
         [StringLength(50)]
         public string HeadQuarter { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
-
-    
-
-
 }

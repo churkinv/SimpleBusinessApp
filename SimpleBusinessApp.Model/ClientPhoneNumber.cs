@@ -13,5 +13,8 @@ namespace SimpleBusinessApp.Model
         public int ClientId { get; set; }
 
         public Client Client { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }
