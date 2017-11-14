@@ -16,7 +16,6 @@ namespace SimpleBusinessApp.ViewModel
 {
     public class MeetingDetailViewModel : DetailViewModelBase, IMeetingDetailViewModel
     {
-
         private IMeetingRepository _meetingRepository;
         private MeetingWrapper _meeting;
         private Client _selectedAvailableClient;
@@ -225,6 +224,5 @@ namespace SimpleBusinessApp.ViewModel
             HasChanges = _meetingRepository.HasChanges();
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
         }
-
     }
 }

@@ -18,6 +18,7 @@ namespace SimpleBusinessApp.Model
         [StringLength(50)]
         public string CountryOfRegistration { get; set; }
 
+        [StringLength(50)]
         public string HeadQuarter { get; set; }
     }
 

@@ -90,8 +90,10 @@
     <Compile Include="Data\Lookups\IMeetingLookupDataService.cs" />
     <Compile Include="Data\Lookups\LookupDataService.cs" />
     <Compile Include="Data\Repository\ClientRepository.cs" />
+    <Compile Include="Data\Repository\CompanyRepository.cs" />
     <Compile Include="Data\Repository\GenericRepository.cs" />
     <Compile Include="Data\Repository\IClientRepository.cs" />
+    <Compile Include="Data\Repository\ICompanyRepository.cs" />
     <Compile Include="Data\Repository\IGenericRepository.cs" />
     <Compile Include="Data\Repository\IMeetingRepository.cs" />
     <Compile Include="Data\Repository\MeetingRepository.cs" />
@@ -101,6 +103,7 @@
     <Compile Include="Event\OpenDetailViewEvent.cs" />
     <Compile Include="Startup\Bootstrapper.cs" />
     <Compile Include="ViewModel\ClientDetailViewModel.cs" />
+    <Compile Include="ViewModel\CompanyDetailViewModel.cs" />
     <Compile Include="ViewModel\DetailViewModelBase.cs" />
     <Compile Include="ViewModel\IClientDetailViewModel.cs" />
     <Compile Include="ViewModel\IDetailViewModel.cs" />
@@ -114,6 +117,9 @@
     <Compile Include="View\ClientDetailView.xaml.cs">
       <DependentUpon>ClientDetailView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\CompanyDetailView.xaml.cs">
+      <DependentUpon>CompanyDetailView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MeetingDetailView.xaml.cs">
       <DependentUpon>MeetingDetailView.xaml</DependentUpon>
     </Compile>
@@ -124,6 +130,7 @@
     <Compile Include="View\Services\MessageDialogService.cs" />
     <Compile Include="Wrapper\ClientPhoneNumberWrapper.cs" />
     <Compile Include="Wrapper\ClientWrapper.cs" />
+    <Compile Include="Wrapper\CompanyWrapper.cs" />
     <Compile Include="Wrapper\MeetingWrapper.cs" />
     <Compile Include="Wrapper\ModelWrapper.cs" />
     <Compile Include="Wrapper\NotifyDataErrorInfoBase.cs" />
@@ -140,6 +147,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\ClientDetailView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CompanyDetailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

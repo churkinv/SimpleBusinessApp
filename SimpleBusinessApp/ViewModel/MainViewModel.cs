@@ -15,13 +15,12 @@ namespace SimpleBusinessApp.ViewModel
     {
         private IEventAggregator _eventAggregator;
         private IIndex<string, IDetailViewModel> _detailViewModelCreator;
-        //private Func<IClientDetailViewModel> _clientDetailViewModelCreator;
-        //private Func<IMeetingDetailViewModel> _meetingDetailViewModelCreator;
         private IMessageDialogService _messageDialogService;
         private IDetailViewModel _selectedDetailViewModel;
         private int nextNewItemId = 0;
         
         public ICommand CreateNewDetailCommand { get; }
+        public ICommand OpenSingleDetailViewCommand { get; }
         public INavigationViewModel NavigationViewModel { get; }
         public ObservableCollection<IDetailViewModel> DetailViewModels { get; }
         public IDetailViewModel SelectedDetailViewModel
@@ -43,12 +42,13 @@ namespace SimpleBusinessApp.ViewModel
             _messageDialogService = messageDialogService;
             DetailViewModels = new ObservableCollection<IDetailViewModel>();
 
-            //_eventAggregator.GetEvent<OpenDetailViewEvent>()
+            _eventAggregator.GetEvent<OpenDetailViewEvent>()
               .Subscribe(OnOpenDetailView); // this event is published by NavigationViewModel when an item is clicked
             _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted);
             _eventAggregator.GetEvent<AfterDetailClosedEvent>().Subscribe(AfterDetailClosed);
 
             CreateNewDetailCommand = new DelegateCommand<Type>(OnCreateNewDetailExecute);
+            OpenSingleDetailViewCommand = new DelegateCommand<Type>(OpenSingleDetailViewExecute);
 
             NavigationViewModel = navigationViewModel;        
         }
@@ -81,6 +81,15 @@ namespace SimpleBusinessApp.ViewModel
             OnOpenDetailView(
                 new OpenDetailViewEventArgs { Id = nextNewItemId--, ViewModelName = viewModelType.Name});
         }
+
+
+        private void OpenSingleDetailViewExecute(Type viewModelType)
+        {
+            OnOpenDetailView(
+               new OpenDetailViewEventArgs { Id = -1, //this value is hardcoded so the same tab opened for this model name, so no new tab will be opened, to be clear that it is not used to load an entity for Db 
+                   ViewModelName = viewModelType.Name });
+        }
+
 
         private void AfterDetailDeleted(AfterDetailDeletedEventArgs args)
         {

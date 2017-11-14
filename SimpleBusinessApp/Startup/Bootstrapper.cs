@@ -32,14 +32,15 @@ namespace SimpleBusinessApp.Startup
             builder.RegisterType<NavigationViewModel>().As<INavigationViewModel>();
             builder.RegisterType<ClientDetailViewModel>()
                 .Keyed<IDetailViewModel>(nameof(ClientDetailViewModel));
-            //builder.RegisterType<MeetingDetailViewModel>().As<IMeetingDetailViewModel>(); -->
             builder.RegisterType<MeetingDetailViewModel>()
                 .Keyed<IDetailViewModel>(nameof(MeetingDetailViewModel));
+            builder.RegisterType<CompanyDetailViewModel>()
+                .Keyed<IDetailViewModel>(nameof(CompanyDetailViewModel));
 
             builder.RegisterType<LookupDataService>().AsImplementedInterfaces();// we also could use IClientLookupDataService, but now LookupDataService will be injected all the func for that are implemented by the LookupDataService class
             builder.RegisterType<ClientRepository>().As<IClientRepository>(); // Container knows now when IClientDataService is required it will just create an instance of ClientDataService class
             builder.RegisterType<MeetingRepository>().As<IMeetingRepository>();
-
+            builder.RegisterType<CompanyRepository>().As<ICompanyRepository>();
 
             return builder.Build();
         }

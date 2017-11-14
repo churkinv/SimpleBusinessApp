@@ -94,7 +94,7 @@ namespace SimpleBusinessApp.ViewModel
             });
         }
 
-        public abstract Task LoadAsync(int Id);
+        public abstract Task LoadAsync(int id);
 
         protected virtual void OnCloseDetailViewExecute()
         {
