@@ -64,6 +64,10 @@
     <Compile Include="Migrations\201711082058116_AddedMeeting.Designer.cs">
       <DependentUpon>201711082058116_AddedMeeting.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711140222077_FixinManualDbUpdateException.cs" />
+    <Compile Include="Migrations\201711140222077_FixinManualDbUpdateException.Designer.cs">
+      <DependentUpon>201711140222077_FixinManualDbUpdateException.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -91,6 +95,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711082058116_AddedMeeting.resx">
       <DependentUpon>201711082058116_AddedMeeting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711140222077_FixinManualDbUpdateException.resx">
+      <DependentUpon>201711140222077_FixinManualDbUpdateException.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
