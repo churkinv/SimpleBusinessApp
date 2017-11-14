@@ -42,7 +42,7 @@ namespace SimpleBusinessApp.ViewModel
             Companies = new ObservableCollection<CompanyWrapper>();
 
             AddCommand = new DelegateCommand(OnAddExecute);
-            RemoveCommand = new DelegateCommand(OnRemoveExecute, OnRemoveCanExecute);
+            RemoveCommand = new DelegateCommand(OnRemoveExecuteAsync, OnRemoveCanExecute);
         }
 
         private void OnAddExecute()
@@ -56,8 +56,17 @@ namespace SimpleBusinessApp.ViewModel
             wrapper.Name = "";
         }
 
-        private void OnRemoveExecute()
+        private async void OnRemoveExecuteAsync()
         {
+            var isReferenced =
+                await _companyRepository.IsReferenceByClientAsync(
+                    SelectedCompany.Id);
+            if (isReferenced)
+            {
+                MessageDialogService.ShowInfoDialog($"The company {SelectedCompany.Name} as it referenced by at least one Client ");
+                return;
+            }
+
             SelectedCompany.PropertyChanged -= Wrapper_PropertyChanged;
             _companyRepository.Remove(SelectedCompany.Model);
             Companies.Remove(SelectedCompany);
