@@ -1,10 +1,11 @@
-﻿using SimpleBusinessApp.ViewModel;
+﻿using MahApps.Metro.Controls;
+using SimpleBusinessApp.ViewModel;
 using System.Windows;
 
 namespace SimpleBusinessApp
 {
 
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         private MainViewModel _viewModel;
 
