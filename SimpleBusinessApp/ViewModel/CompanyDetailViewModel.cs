@@ -9,24 +9,67 @@ using SimpleBusinessApp.Wrapper;
 using System.ComponentModel;
 using Prism.Commands;
 using System.Linq;
+using System.Windows.Input;
 
 namespace SimpleBusinessApp.ViewModel
 {
     class CompanyDetailViewModel : DetailViewModelBase
     {
         private ICompanyRepository _companyRepository;
-        public ObservableCollection<CompanyWrapper> Companies { get; }
+        private CompanyWrapper _selectedCompany;
+        public CompanyWrapper SelectedCompany
+        {
+            get { return _selectedCompany; }
+            set
+            {
+                _selectedCompany = value;
+                OnPropertyChanged();
+                ((DelegateCommand)RemoveCommand).RaiseCanExecuteChanged();
+            }
+        }
 
+        public ObservableCollection<CompanyWrapper> Companies { get; }
+        public ICommand AddCommand { get; }
+        public ICommand RemoveCommand { get; }
 
         public CompanyDetailViewModel(IEventAggregator eventAggregator,
             IMessageDialogService messageDialogService,
-            ICompanyRepository companyRepository) 
+            ICompanyRepository companyRepository)
             : base(eventAggregator, messageDialogService)
         {
             _companyRepository = companyRepository;
             Title = "Company details";
             Companies = new ObservableCollection<CompanyWrapper>();
-        }        
+
+            AddCommand = new DelegateCommand(OnAddExecute);
+            RemoveCommand = new DelegateCommand(OnRemoveExecute, OnRemoveCanExecute);
+        }
+
+        private void OnAddExecute()
+        {
+            var wrapper = new CompanyWrapper(new Company());
+            wrapper.PropertyChanged += Wrapper_PropertyChanged;
+            _companyRepository.Add(wrapper.Model);
+            Companies.Add(wrapper);
+
+            //trigger the validation
+            wrapper.Name = "";
+        }
+
+        private void OnRemoveExecute()
+        {
+            SelectedCompany.PropertyChanged -= Wrapper_PropertyChanged;
+            _companyRepository.Remove(SelectedCompany.Model);
+            Companies.Remove(SelectedCompany);
+            SelectedCompany = null;
+            HasChanges = _companyRepository.HasChanges();
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+        }
+
+        private bool OnRemoveCanExecute()
+        {
+            return SelectedCompany != null;
+        }
 
         public override async Task LoadAsync(int id)
         {
@@ -73,9 +116,23 @@ namespace SimpleBusinessApp.ViewModel
 
         protected async override void OnSaveExecute()
         {
-            await _companyRepository.SaveAsync();
-            HasChanges = _companyRepository.HasChanges();
-            RaiseCollectionSavedEvent();
+            try
+            {
+                await _companyRepository.SaveAsync();
+                HasChanges = _companyRepository.HasChanges();
+                RaiseCollectionSavedEvent();
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                }
+                MessageDialogService.ShowInfoDialog("Error while saving the entities, " +
+                    "the data be reloaded. Details: " + ex.Message);
+                await LoadAsync(Id);
+            }
+           
         }
     }
 }

@@ -229,7 +229,6 @@ namespace SimpleBusinessApp.ViewModel
             return SelectedPhoneNumber != null;
         }
 
-
         private async void AfterCollectionSavedAsync(AfterCollectionSavedEventArgs args)
         {
             if (args.ViewModelName == nameof(CompanyDetailViewModel))

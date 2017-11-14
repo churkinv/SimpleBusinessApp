@@ -68,6 +68,10 @@
     <Compile Include="Migrations\201711140222077_FixinManualDbUpdateException.Designer.cs">
       <DependentUpon>201711140222077_FixinManualDbUpdateException.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711140315074_RemovedDAForRequiredFiledCompany.cs" />
+    <Compile Include="Migrations\201711140315074_RemovedDAForRequiredFiledCompany.Designer.cs">
+      <DependentUpon>201711140315074_RemovedDAForRequiredFiledCompany.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -98,6 +102,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711140222077_FixinManualDbUpdateException.resx">
       <DependentUpon>201711140222077_FixinManualDbUpdateException.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711140315074_RemovedDAForRequiredFiledCompany.resx">
+      <DependentUpon>201711140315074_RemovedDAForRequiredFiledCompany.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
