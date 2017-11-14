@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Data.Entity.Infrastructure;
 
 namespace SimpleBusinessApp.ViewModel
 {
@@ -172,7 +173,30 @@ namespace SimpleBusinessApp.ViewModel
 
         protected override async void OnSaveExecute()
         {
-            await _clientRepository.SaveAsync();
+            try
+            {
+                await _clientRepository.SaveAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                var result = MessageDialogService.ShowOkCancelDialog("The entity has been changed in the meantime by someone else."
+                    + "Click OK to save your changes anyway,"
+                    + "click Cancel to reload the entity from the databse.", "Question");
+                if (result == MessageDialogResult.Ok)
+                {
+                    //update the original values with database-values
+                    var entry = ex.Entries.Single();
+                    entry.OriginalValues.SetValues(entry.GetDatabaseValues());
+                    await _clientRepository.SaveAsync();
+                }
+                else
+                {
+                    // reload entity from database
+                    await ex.Entries.Single().ReloadAsync();
+                    await LoadAsync(Client.Id);
+                }
+            }
+
             HasChanges = _clientRepository.HasChanges();
             Id = Client.Id;
             RaiseDetailSavedEvent(Client.Id, $"{Client.FirstName} {Client.LastName}");
