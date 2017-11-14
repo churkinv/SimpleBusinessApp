@@ -173,42 +173,13 @@ namespace SimpleBusinessApp.ViewModel
 
         protected override async void OnSaveExecute()
         {
-            try
-            {
-                await _clientRepository.SaveAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-
-                var databaseValues = ex.Entries.Single().GetDatabaseValues();
-                if (databaseValues == null)
+            await SaveWithOptimisticConcurrencyAsync(_clientRepository.SaveAsync,
+                () =>
                 {
-                    MessageDialogService.ShowInfoDialog("The entity has been deleted by another user");
-                    RaiseDetailDeletedEvent(Id);
-                    return;
-                }
-
-                var result = MessageDialogService.ShowOkCancelDialog("The entity has been changed in the meantime by someone else."
-                    + "Click OK to save your changes anyway,"
-                    + "click Cancel to reload the entity from the databse.", "Question");
-                if (result == MessageDialogResult.Ok)
-                {
-                    //update the original values with database-values
-                    var entry = ex.Entries.Single();
-                    entry.OriginalValues.SetValues(entry.GetDatabaseValues());
-                    await _clientRepository.SaveAsync();
-                }
-                else
-                {
-                    // reload entity from database
-                    await ex.Entries.Single().ReloadAsync();
-                    await LoadAsync(Client.Id);
-                }
-            }
-
-            HasChanges = _clientRepository.HasChanges();
-            Id = Client.Id;
-            RaiseDetailSavedEvent(Client.Id, $"{Client.FirstName} {Client.LastName}");
+                    HasChanges = _clientRepository.HasChanges();
+                    Id = Client.Id;
+                    RaiseDetailSavedEvent(Client.Id, $"{Client.FirstName} {Client.LastName}");
+                });
         }
 
         protected override bool OnSaveCanExecute()
