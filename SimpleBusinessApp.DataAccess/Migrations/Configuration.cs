@@ -18,9 +18,9 @@ namespace SimpleBusinessApp.DataAccess.Migrations
         {
             context.Clients.AddOrUpdate(     // the command will create or update table in DB
                 f => f.FirstName,            // I identify my Clients by First Name
-                new Client { FirstName = "Thomas", LastName = "Huber" },
+                new Client { FirstName = "Batmans", LastName = "Proffesor" },
                 new Client { FirstName = "Andreas", LastName = "Boehler" },
-                new Client { FirstName = "Julia", LastName = "Huber" },
+                new Client { FirstName = "Andriy", LastName = "Alch" },
                 new Client { FirstName = "Chrissi", LastName = "Egin" }
             );
 
